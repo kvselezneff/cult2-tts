@@ -1,8 +1,8 @@
 {
-  "SaveName": "Cult2 — материалы",
-  "EpochTime": 1790717578,
-  "Date": "9/30/2026, 12:32:58 AM",
-  "VersionNumber": "v14.2.1",
+  "SaveName": "Cult2",
+  "EpochTime": 1790718667,
+  "Date": "9/30/2026 12:51:07 AM",
+  "VersionNumber": "v14.2.2",
   "GameMode": "Cult2",
   "GameType": "Game",
   "GameComplexity": "",
@@ -20,7 +20,189 @@
   "Table": "Table_None",
   "Sky": "Sky_Tunnel",
   "Note": "",
-  "TabStates": {},
+  "TabStates": {
+    "0": {
+      "title": "Rules",
+      "body": "",
+      "color": "Grey",
+      "visibleColor": {
+        "r": 0.5,
+        "g": 0.5,
+        "b": 0.5
+      },
+      "id": 0
+    },
+    "1": {
+      "title": "White",
+      "body": "",
+      "color": "White",
+      "visibleColor": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
+      },
+      "id": 1
+    },
+    "2": {
+      "title": "Brown",
+      "body": "",
+      "color": "Brown",
+      "visibleColor": {
+        "r": 0.443,
+        "g": 0.231,
+        "b": 0.09
+      },
+      "id": 2
+    },
+    "3": {
+      "title": "Red",
+      "body": "",
+      "color": "Red",
+      "visibleColor": {
+        "r": 0.856,
+        "g": 0.1,
+        "b": 0.094
+      },
+      "id": 3
+    },
+    "4": {
+      "title": "Orange",
+      "body": "",
+      "color": "Orange",
+      "visibleColor": {
+        "r": 0.956,
+        "g": 0.392,
+        "b": 0.113
+      },
+      "id": 4
+    },
+    "5": {
+      "title": "Yellow",
+      "body": "",
+      "color": "Yellow",
+      "visibleColor": {
+        "r": 0.905,
+        "g": 0.898,
+        "b": 0.172
+      },
+      "id": 5
+    },
+    "6": {
+      "title": "Green",
+      "body": "",
+      "color": "Green",
+      "visibleColor": {
+        "r": 0.192,
+        "g": 0.701,
+        "b": 0.168
+      },
+      "id": 6
+    },
+    "7": {
+      "title": "Blue",
+      "body": "",
+      "color": "Blue",
+      "visibleColor": {
+        "r": 0.118,
+        "g": 0.53,
+        "b": 1.0
+      },
+      "id": 7
+    },
+    "8": {
+      "title": "Teal",
+      "body": "",
+      "color": "Teal",
+      "visibleColor": {
+        "r": 0.129,
+        "g": 0.694,
+        "b": 0.607
+      },
+      "id": 8
+    },
+    "9": {
+      "title": "Purple",
+      "body": "",
+      "color": "Purple",
+      "visibleColor": {
+        "r": 0.627,
+        "g": 0.125,
+        "b": 0.941
+      },
+      "id": 9
+    },
+    "10": {
+      "title": "Pink",
+      "body": "",
+      "color": "Pink",
+      "visibleColor": {
+        "r": 0.96,
+        "g": 0.439,
+        "b": 0.807
+      },
+      "id": 10
+    },
+    "11": {
+      "title": "Black",
+      "body": "",
+      "color": "Black",
+      "visibleColor": {
+        "r": 0.25,
+        "g": 0.25,
+        "b": 0.25
+      },
+      "id": 11
+    }
+  },
+  "Grid": {
+    "Type": 0,
+    "Lines": false,
+    "Color": {
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0
+    },
+    "Opacity": 0.75,
+    "ThickLines": false,
+    "Snapping": false,
+    "Offset": false,
+    "BothSnapping": false,
+    "xSize": 2.0,
+    "ySize": 2.0,
+    "PosOffset": {
+      "x": 0.0,
+      "y": 1.0,
+      "z": 0.0
+    }
+  },
+  "Lighting": {
+    "LightIntensity": 0.54,
+    "LightColor": {
+      "r": 1.0,
+      "g": 0.9804,
+      "b": 0.8902
+    },
+    "AmbientIntensity": 1.3,
+    "AmbientType": 0,
+    "AmbientSkyColor": {
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "AmbientEquatorColor": {
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "AmbientGroundColor": {
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "ReflectionIntensity": 1.0,
+    "LutIndex": 0,
+    "LutContribution": 1.0
+  },
   "Hands": {
     "Enable": true,
     "DisableUnused": false,
@@ -40,35 +222,51 @@
     "TurnColor": ""
   },
   "DecalPallet": [],
-  "LuaScript": "",
+  "LuaScript": "--[[ Lua code. See documentation: https://api.tabletopsimulator.com/ --]]\n\n--[[ The onLoad event is called after the game save finishes loading. --]]\nfunction onLoad()\n    --[[ print('onLoad!') --]]\nend\n\n--[[ The onUpdate event is called once per frame. --]]\nfunction onUpdate()\n    --[[ print('onUpdate loop!') --]]\nend",
   "LuaScriptState": "",
-  "XmlUI": "",
-  "SnapPoints": [],
+  "XmlUI": "<!-- Xml UI. See documentation: https://api.tabletopsimulator.com/ui/introUI/ -->",
   "ObjectStates": [
     {
       "GUID": "c2t000",
       "Name": "BlockSquare",
+      "Transform": {
+        "posX": 0.0,
+        "posY": 0.5,
+        "posZ": 0.0,
+        "rotX": 0.0,
+        "rotY": 0.0,
+        "rotZ": 0.0,
+        "scaleX": 100.0,
+        "scaleY": 1.0,
+        "scaleZ": 70.0
+      },
       "Nickname": "Стол",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ColorDiffuse": {
+        "r": 0.219999969,
+        "g": 0.199999958,
+        "b": 0.179999977
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
       "Locked": true,
       "Grid": false,
       "Snap": false,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
       "Tooltip": false,
-      "Transform": {
-        "posX": 0,
-        "posY": 0.5,
-        "posZ": 0,
-        "rotX": 0,
-        "rotY": 0,
-        "rotZ": 0,
-        "scaleX": 100,
-        "scaleY": 1,
-        "scaleZ": 70
-      },
-      "ColorDiffuse": {
-        "r": 0.22,
-        "g": 0.2,
-        "b": 0.18
-      },
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": ""
@@ -77,28 +275,28 @@
       "GUID": "c20001",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -12.591519434628976,
-        "posY": 2,
-        "posZ": 11.749645952959364,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.795759717314488,
-        "scaleY": 1,
-        "scaleZ": 4.795759717314488
+        "posX": -6.21265268,
+        "posY": 1.10000014,
+        "posZ": -22.7175789,
+        "rotX": 1.18618011E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 3.945757,
+        "scaleY": 1.0,
+        "scaleZ": 3.945757
       },
       "Nickname": "Планшет: Крыса",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -114,48 +312,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_krysa.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_krysa_2.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20002",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0,
-        "posY": 2,
-        "posZ": 11.749645952959364,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.795759717314488,
-        "scaleY": 1,
-        "scaleZ": 4.795759717314488
+        "posX": -36.05496,
+        "posY": 1.00000024,
+        "posZ": 6.40253067,
+        "rotX": -1.40389872E-07,
+        "rotY": 180.0102,
+        "rotZ": 1.24642341E-08,
+        "scaleX": 3.945757,
+        "scaleY": 1.0,
+        "scaleZ": 3.945757
       },
       "Nickname": "Планшет: Таракан",
       "Description": "Второй стороны пока нет: оборот — копия лица.",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -171,48 +369,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_tarakan.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_tarakan_back.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20003",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 12.591519434628976,
-        "posY": 2,
-        "posZ": 11.749645952959364,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.795759717314488,
-        "scaleY": 1,
-        "scaleZ": 4.795759717314488
+        "posX": -36.517643,
+        "posY": 1.00000024,
+        "posZ": -10.7420063,
+        "rotX": -2.50387071E-08,
+        "rotY": 179.9671,
+        "rotZ": 1.11961057E-07,
+        "scaleX": 3.945757,
+        "scaleY": 1.0,
+        "scaleZ": 3.945757
       },
       "Nickname": "Планшет: Ворона",
       "Description": "Второй стороны пока нет: оборот — копия лица.",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -228,48 +426,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_vorona.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_vorona_back.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20004",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -12.591519434628976,
-        "posY": 2,
-        "posZ": 4.248937858878091,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.795759717314488,
-        "scaleY": 1,
-        "scaleZ": 4.795759717314488
+        "posX": -36.5945168,
+        "posY": 1.00000024,
+        "posZ": -2.26198244,
+        "rotX": 1.61159448E-07,
+        "rotY": 179.964539,
+        "rotZ": 1.16011933E-07,
+        "scaleX": 3.945757,
+        "scaleY": 1.0,
+        "scaleZ": 3.945757
       },
       "Nickname": "Планшет: Ящер",
       "Description": "Второй стороны пока нет: оборот — копия лица.",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -285,48 +483,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_yashcher.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_yashcher_back.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20005",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0,
-        "posY": 2,
-        "posZ": 4.248937858878091,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.795759717314488,
-        "scaleY": 1,
-        "scaleZ": 4.795759717314488
+        "posX": -35.8819733,
+        "posY": 1.00000024,
+        "posZ": 15.251483,
+        "rotX": 3.451314E-08,
+        "rotY": 179.964279,
+        "rotZ": 1.03550031E-08,
+        "scaleX": 3.945757,
+        "scaleY": 1.0,
+        "scaleZ": 3.945757
       },
       "Nickname": "Планшет: Обезьяна",
       "Description": "Второй стороны пока нет: оборот — копия лица.",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -342,48 +540,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_obezyana.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_obezyana_back.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20006",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -18.890459363957596,
-        "posY": 2,
-        "posZ": -2.146451523851592,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6113074204946995,
-        "scaleY": 1,
-        "scaleZ": 1.6113074204946995
+        "posX": -1.82900035,
+        "posY": 1.10000014,
+        "posZ": 5.175284,
+        "rotX": 7.757271E-08,
+        "rotY": 180.007065,
+        "rotZ": 180.0,
+        "scaleX": 3.46130514,
+        "scaleY": 1.0,
+        "scaleZ": 3.46130514
       },
       "Nickname": "Коммуникации",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -399,48 +597,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_kommunikacii.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_back_1.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20007",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -14.167844522968197,
-        "posY": 2,
-        "posZ": -2.146451523851592,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6113074204946995,
-        "scaleY": 1,
-        "scaleZ": 1.6113074204946995
+        "posX": 8.059649,
+        "posY": 1.10000014,
+        "posZ": 5.186613,
+        "rotX": 3.85856467E-08,
+        "rotY": 179.99498,
+        "rotZ": 180.0,
+        "scaleX": 3.46130514,
+        "scaleY": 1.0,
+        "scaleZ": 3.46130514
       },
       "Nickname": "ПромЗона",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -456,48 +654,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_promzona.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_back_1.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20008",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -9.445229681978798,
-        "posY": 2,
-        "posZ": -2.146451523851592,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6113074204946995,
-        "scaleY": 1,
-        "scaleZ": 1.6113074204946995
+        "posX": -11.8043814,
+        "posY": 1.10000014,
+        "posZ": 5.05378056,
+        "rotX": -6.119634E-08,
+        "rotY": 180.051422,
+        "rotZ": 180.0,
+        "scaleX": 3.46130514,
+        "scaleY": 1.0,
+        "scaleZ": 3.46130514
       },
       "Nickname": "Эпицентр",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -513,48 +711,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_epicentr.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_back_1.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20009",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -4.722614840989399,
-        "posY": 2,
-        "posZ": -2.146451523851592,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6113074204946995,
-        "scaleY": 1,
-        "scaleZ": 1.6113074204946995
+        "posX": 8.141377,
+        "posY": 1.10000014,
+        "posZ": -2.01852322,
+        "rotX": 7.545986E-08,
+        "rotY": 180.00827,
+        "rotZ": 180.0,
+        "scaleX": 3.46130514,
+        "scaleY": 1.0,
+        "scaleZ": 3.46130514
       },
       "Nickname": "Территория Войны",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -570,48 +768,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_territoriya_voiny.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_back_3.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20010",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0,
-        "posY": 2,
-        "posZ": -2.146451523851592,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6113074204946995,
-        "scaleY": 1,
-        "scaleZ": 1.6113074204946995
+        "posX": -11.8085337,
+        "posY": 1.10000014,
+        "posZ": -2.07017446,
+        "rotX": 1.6427494E-08,
+        "rotY": 179.994354,
+        "rotZ": 180.0,
+        "scaleX": 3.46130514,
+        "scaleY": 1.0,
+        "scaleZ": 3.46130514
       },
       "Nickname": "Торжище",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -627,48 +825,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_torzhishche.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_back_3.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20011",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 4.722614840989399,
-        "posY": 2,
-        "posZ": -2.146451523851592,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6113074204946995,
-        "scaleY": 1,
-        "scaleZ": 1.6113074204946995
+        "posX": -1.77939188,
+        "posY": 1.10000014,
+        "posZ": -2.03682041,
+        "rotX": 1.60655418E-07,
+        "rotY": 179.9828,
+        "rotZ": 180.0,
+        "scaleX": 3.46130514,
+        "scaleY": 1.0,
+        "scaleZ": 3.46130514
       },
       "Nickname": "Центральный",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -684,48 +882,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_centralnyi.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_back_3.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20012",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 9.445229681978798,
-        "posY": 2,
-        "posZ": -2.146451523851592,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6113074204946995,
-        "scaleY": 1,
-        "scaleZ": 1.6113074204946995
+        "posX": -11.8738213,
+        "posY": 1.10000014,
+        "posZ": -9.215072,
+        "rotX": 2.7333849E-08,
+        "rotY": 180.00145,
+        "rotZ": 180.0,
+        "scaleX": 3.46130514,
+        "scaleY": 1.0,
+        "scaleZ": 3.46130514
       },
       "Nickname": "Пекло",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -741,48 +939,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_peklo.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_back_4.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20013",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 14.167844522968197,
-        "posY": 2,
-        "posZ": -2.146451523851592,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6113074204946995,
-        "scaleY": 1,
-        "scaleZ": 1.6113074204946995
+        "posX": -1.87335539,
+        "posY": 1.10000014,
+        "posZ": -9.192661,
+        "rotX": 3.16627677E-07,
+        "rotY": 179.99382,
+        "rotZ": 180.0,
+        "scaleX": 3.46130514,
+        "scaleY": 1.0,
+        "scaleZ": 3.46130514
       },
       "Nickname": "Плавильня",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -798,48 +996,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_plavilnya.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_back_4.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20014",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 18.890459363957596,
-        "posY": 2,
-        "posZ": -2.146451523851592,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6113074204946995,
-        "scaleY": 1,
-        "scaleZ": 1.6113074204946995
+        "posX": 8.098684,
+        "posY": 1.00000024,
+        "posZ": -9.27412,
+        "rotX": 1.784859E-07,
+        "rotY": 180.011154,
+        "rotZ": 6.411165E-09,
+        "scaleX": 3.46130514,
+        "scaleY": 1.0,
+        "scaleZ": 3.46130514
       },
       "Nickname": "Сады Предтеч",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -855,48 +1053,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_sady_predtech.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_back_4.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20015",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -12,
-        "posY": 2,
-        "posZ": -7.488885711130744,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 4.91660777385159,
-        "scaleY": 1,
-        "scaleZ": 4.91660777385159
+        "posX": -1.78170145,
+        "posY": 0.9999989,
+        "posZ": 12.5592566,
+        "rotX": 5.49279048E-06,
+        "rotY": 180.004745,
+        "rotZ": -6.116059E-06,
+        "scaleX": 3.61660457,
+        "scaleY": 1.0,
+        "scaleZ": 3.61660457
       },
       "Nickname": "Пустошь · Экспедиция · Окраина",
       "Description": "Второй стороны пока нет: оборот — копия лица.",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -912,48 +1110,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_pustosh_ekspediciya_okraina.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/loc_pustosh_ekspediciya_okraina_back.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.1,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20016",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 3,
-        "posY": 2,
-        "posZ": -7.488885711130744,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.657243816254417,
-        "scaleY": 1,
-        "scaleZ": 0.657243816254417
+        "posX": 0.4582647,
+        "posY": 1.09999621,
+        "posZ": 12.862,
+        "rotX": 1.4321522E-05,
+        "rotY": 180.034424,
+        "rotZ": -3.328569E-05,
+        "scaleX": 1.90724218,
+        "scaleY": 1.0,
+        "scaleZ": 1.90724218
       },
       "Nickname": "Экспедиция +3",
       "Description": "Второй стороны пока нет: оборот — копия лица.",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -969,48 +1167,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/exp_plus3.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/exp_plus3_back.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20017",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -30.4,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -40.3442879,
+        "posY": 1.20000029,
+        "posZ": -25.860117,
+        "rotX": -3.35195125E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон охра 1",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1026,48 +1224,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_1_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_1_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_5_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20018",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -28.2,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -38.164856,
+        "posY": 1.20000029,
+        "posZ": -25.9225311,
+        "rotX": -1.562158E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон охра 4",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1083,48 +1281,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_4_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_4_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_2_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20019",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -26,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -35.94536,
+        "posY": 1.20000029,
+        "posZ": -25.9546,
+        "rotX": 1.75771376E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон охра 3",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1140,48 +1338,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_3_a.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_3_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20020",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -23.8,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -33.7388725,
+        "posY": 1.20000029,
+        "posZ": -25.965004,
+        "rotX": -3.35195125E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон охра 2",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1197,48 +1395,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_2_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_2_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_4_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20021",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -21.6,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -31.5346527,
+        "posY": 1.20000029,
+        "posZ": -26.0343018,
+        "rotX": 1.08959547E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон охра 5",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1254,48 +1452,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_5_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_5_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_1_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20022",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -17.4,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -9.972661,
+        "posY": 1.20000029,
+        "posZ": -16.2799835,
+        "rotX": -7.651432E-09,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон тёмно-синий 1",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1311,48 +1509,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_1_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_1_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_5_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20023",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -15.2,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -7.78057528,
+        "posY": 1.20000029,
+        "posZ": -16.3146744,
+        "rotX": 1.881484E-08,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон тёмно-синий 4",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1368,48 +1566,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_4_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_4_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_2_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20024",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -13,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -5.580113,
+        "posY": 1.20000029,
+        "posZ": -16.3250027,
+        "rotX": -7.651432E-09,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон тёмно-синий 3",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1425,48 +1623,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_3_a.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_3_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20025",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -10.8,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -3.372445,
+        "posY": 1.20000029,
+        "posZ": -16.3678436,
+        "rotX": -7.651432E-09,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон тёмно-синий 2",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1482,48 +1680,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_2_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_2_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_4_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20026",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -8.6,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -1.16063881,
+        "posY": 1.20000029,
+        "posZ": -16.3526611,
+        "rotX": 1.45059573E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон тёмно-синий 5",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1539,48 +1737,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_5_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_5_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_1_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20027",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -4.4,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -40.1439133,
+        "posY": 1.20000029,
+        "posZ": -23.7113171,
+        "rotX": -1.241585E-06,
+        "rotY": 180.000015,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон светло-серый 1",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1596,48 +1794,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_1_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_1_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_5_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20028",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -2.2,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -37.9611969,
+        "posY": 1.20000029,
+        "posZ": -23.6801453,
+        "rotX": -1.1718347E-06,
+        "rotY": 180.000031,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон светло-серый 4",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1653,48 +1851,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_4_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_4_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_2_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20029",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -35.77836,
+        "posY": 1.20000029,
+        "posZ": -23.66425,
+        "rotX": -1.17183288E-06,
+        "rotY": 180.000031,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон светло-серый 3",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1710,48 +1908,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_3_a.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_3_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20030",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 2.2,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -33.56544,
+        "posY": 1.20000029,
+        "posZ": -23.617466,
+        "rotX": -1.137583E-06,
+        "rotY": 180.000031,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон светло-серый 2",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1767,48 +1965,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_2_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_2_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_4_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20031",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 4.4,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -31.4068565,
+        "posY": 1.20000029,
+        "posZ": -23.66571,
+        "rotX": 5.122319E-07,
+        "rotY": 180.000031,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон светло-серый 5",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1824,48 +2022,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_5_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_5_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_1_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20032",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 8.6,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -40.6371346,
+        "posY": 1.20000029,
+        "posZ": -18.6058922,
+        "rotX": -9.917836E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон оливковый 1",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1881,48 +2079,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_1_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_1_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_5_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20033",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 10.8,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -38.436512,
+        "posY": 1.20000029,
+        "posZ": -18.6082687,
+        "rotX": -6.15234E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон оливковый 4",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1938,48 +2136,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_4_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_4_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_2_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20034",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 13,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -36.23651,
+        "posY": 1.20000029,
+        "posZ": -18.6082649,
+        "rotX": -6.990513E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон оливковый 3",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -1995,48 +2193,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_3_a.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_3_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20035",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 15.2,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -34.0365219,
+        "posY": 1.20000029,
+        "posZ": -18.6082745,
+        "rotX": -6.427555E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон оливковый 2",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -2052,48 +2250,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_2_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_2_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_4_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20036",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 17.4,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -31.8365135,
+        "posY": 1.20000029,
+        "posZ": -18.6082745,
+        "rotX": -7.54953135E-07,
+        "rotY": 180.0,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон оливковый 5",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -2109,48 +2307,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_5_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_5_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_1_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20037",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 21.6,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -40.3576775,
+        "posY": 1.20000029,
+        "posZ": -21.1490021,
+        "rotX": -3.225312E-08,
+        "rotY": 180.000015,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон синий 1",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -2166,48 +2364,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_1_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_1_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_5_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20038",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 23.8,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -38.1576767,
+        "posY": 1.20000029,
+        "posZ": -21.1490021,
+        "rotX": 7.83674849E-08,
+        "rotY": 180.000015,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон синий 4",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -2223,48 +2421,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_4_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_4_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_2_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20039",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 26,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -35.9576759,
+        "posY": 1.20000029,
+        "posZ": -21.1490021,
+        "rotX": 4.10230854E-08,
+        "rotY": 180.000015,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон синий 3",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -2280,48 +2478,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_3_a.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_3_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20040",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 28.2,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -33.7576752,
+        "posY": 1.20000029,
+        "posZ": -21.1490021,
+        "rotX": 6.576628E-08,
+        "rotY": 180.000015,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон синий 2",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -2337,48 +2535,48 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_2_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_2_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_4_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     },
     {
       "GUID": "c20041",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 30.4,
-        "posY": 2,
-        "posZ": -12.28628456272085,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.6,
-        "scaleY": 1,
-        "scaleZ": 0.6
+        "posX": -31.5576744,
+        "posY": 1.20000029,
+        "posZ": -21.1490021,
+        "rotX": 1.662832E-07,
+        "rotY": 180.000015,
+        "rotZ": 180.0,
+        "scaleX": 0.8999997,
+        "scaleY": 1.0,
+        "scaleZ": 0.8999997
       },
       "Nickname": "Жетон синий 5",
       "Description": "",
       "GMNotes": "",
       "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
@@ -2394,21 +2592,21 @@
       "GridProjection": false,
       "HideWhenFaceDown": false,
       "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_5_a.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_5_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_1_b.jpg",
+        "ImageScalar": 1.0,
+        "WidthScale": 0.0,
         "CustomTile": {
           "Type": 0,
           "Thickness": 0.2,
           "Stackable": false,
           "Stretch": true
         }
-      }
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
     }
   ]
 }
