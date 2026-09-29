@@ -1,7 +1,7 @@
 {
   "SaveName": "Cult2 — материалы",
-  "EpochTime": 1790717108,
-  "Date": "9/30/2026, 12:25:08 AM",
+  "EpochTime": 1790717578,
+  "Date": "9/30/2026, 12:32:58 AM",
   "VersionNumber": "v14.2.1",
   "GameMode": "Cult2",
   "GameType": "Game",
@@ -17,7 +17,7 @@
   "Tags": [],
   "Gravity": 0.5,
   "PlayArea": 0.5,
-  "Table": "Table_RPG",
+  "Table": "Table_None",
   "Sky": "Sky_Tunnel",
   "Note": "",
   "TabStates": {},
@@ -46,12 +46,40 @@
   "SnapPoints": [],
   "ObjectStates": [
     {
+      "GUID": "c2t000",
+      "Name": "BlockSquare",
+      "Nickname": "Стол",
+      "Locked": true,
+      "Grid": false,
+      "Snap": false,
+      "Tooltip": false,
+      "Transform": {
+        "posX": 0,
+        "posY": 0.5,
+        "posZ": 0,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 100,
+        "scaleY": 1,
+        "scaleZ": 70
+      },
+      "ColorDiffuse": {
+        "r": 0.22,
+        "g": 0.2,
+        "b": 0.18
+      },
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
       "GUID": "c20001",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -10.191519434628976,
-        "posY": 1.5,
-        "posZ": 10,
+        "posX": -12.591519434628976,
+        "posY": 2,
+        "posZ": 11.749645952959364,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -107,8 +135,8 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 0,
-        "posY": 1.5,
-        "posZ": 10,
+        "posY": 2,
+        "posZ": 11.749645952959364,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -163,9 +191,9 @@
       "GUID": "c20003",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 10.191519434628976,
-        "posY": 1.5,
-        "posZ": 10,
+        "posX": 12.591519434628976,
+        "posY": 2,
+        "posZ": 11.749645952959364,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -220,9 +248,9 @@
       "GUID": "c20004",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -10.191519434628976,
-        "posY": 1.5,
-        "posZ": 4.899291905918727,
+        "posX": -12.591519434628976,
+        "posY": 2,
+        "posZ": 4.248937858878091,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -278,8 +306,8 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 0,
-        "posY": 1.5,
-        "posZ": 4.899291905918727,
+        "posY": 2,
+        "posZ": 4.248937858878091,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -334,9 +362,9 @@
       "GUID": "c20006",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -14.090459363957596,
-        "posY": 1.5,
-        "posZ": 0.9039025231890452,
+        "posX": -18.890459363957596,
+        "posY": 2,
+        "posZ": -2.146451523851592,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -391,9 +419,9 @@
       "GUID": "c20007",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -10.567844522968198,
-        "posY": 1.5,
-        "posZ": 0.9039025231890452,
+        "posX": -14.167844522968197,
+        "posY": 2,
+        "posZ": -2.146451523851592,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -448,9 +476,9 @@
       "GUID": "c20008",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -7.045229681978798,
-        "posY": 1.5,
-        "posZ": 0.9039025231890452,
+        "posX": -9.445229681978798,
+        "posY": 2,
+        "posZ": -2.146451523851592,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -505,9 +533,9 @@
       "GUID": "c20009",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -3.522614840989399,
-        "posY": 1.5,
-        "posZ": 0.9039025231890452,
+        "posX": -4.722614840989399,
+        "posY": 2,
+        "posZ": -2.146451523851592,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -563,8 +591,8 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 0,
-        "posY": 1.5,
-        "posZ": 0.9039025231890452,
+        "posY": 2,
+        "posZ": -2.146451523851592,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -619,9 +647,9 @@
       "GUID": "c20011",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 3.522614840989399,
-        "posY": 1.5,
-        "posZ": 0.9039025231890452,
+        "posX": 4.722614840989399,
+        "posY": 2,
+        "posZ": -2.146451523851592,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -676,9 +704,9 @@
       "GUID": "c20012",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 7.045229681978798,
-        "posY": 1.5,
-        "posZ": 0.9039025231890452,
+        "posX": 9.445229681978798,
+        "posY": 2,
+        "posZ": -2.146451523851592,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -733,9 +761,9 @@
       "GUID": "c20013",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 10.567844522968198,
-        "posY": 1.5,
-        "posZ": 0.9039025231890452,
+        "posX": 14.167844522968197,
+        "posY": 2,
+        "posZ": -2.146451523851592,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -790,9 +818,9 @@
       "GUID": "c20014",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 14.090459363957596,
-        "posY": 1.5,
-        "posZ": 0.9039025231890452,
+        "posX": 18.890459363957596,
+        "posY": 2,
+        "posZ": -2.146451523851592,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -847,9 +875,9 @@
       "GUID": "c20015",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0,
-        "posY": 1.5,
-        "posZ": -1.938531664090107,
+        "posX": -12,
+        "posY": 2,
+        "posZ": -7.488885711130744,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -904,9 +932,66 @@
       "GUID": "c20016",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -2.8,
-        "posY": 1.5,
-        "posZ": -4.335930515680213,
+        "posX": 3,
+        "posY": 2,
+        "posZ": -7.488885711130744,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 0.657243816254417,
+        "scaleY": 1,
+        "scaleZ": 0.657243816254417
+      },
+      "Nickname": "Экспедиция +3",
+      "Description": "Второй стороны пока нет: оборот — копия лица.",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": false,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CustomImage": {
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/exp_plus3.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/exp_plus3_back.jpg",
+        "ImageScalar": 1,
+        "WidthScale": 0,
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.2,
+          "Stackable": false,
+          "Stretch": true
+        }
+      }
+    },
+    {
+      "GUID": "c20017",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": -30.4,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -958,12 +1043,12 @@
       }
     },
     {
-      "GUID": "c20017",
+      "GUID": "c20018",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -1.4,
-        "posY": 1.5,
-        "posZ": -4.335930515680213,
+        "posX": -28.2,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1015,12 +1100,12 @@
       }
     },
     {
-      "GUID": "c20018",
+      "GUID": "c20019",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0,
-        "posY": 1.5,
-        "posZ": -4.335930515680213,
+        "posX": -26,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1072,12 +1157,12 @@
       }
     },
     {
-      "GUID": "c20019",
+      "GUID": "c20020",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 1.4,
-        "posY": 1.5,
-        "posZ": -4.335930515680213,
+        "posX": -23.8,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1129,12 +1214,12 @@
       }
     },
     {
-      "GUID": "c20020",
+      "GUID": "c20021",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 2.8,
-        "posY": 1.5,
-        "posZ": -4.335930515680213,
+        "posX": -21.6,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1186,12 +1271,12 @@
       }
     },
     {
-      "GUID": "c20021",
+      "GUID": "c20022",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -2.8,
-        "posY": 1.5,
-        "posZ": -5.735930515680213,
+        "posX": -17.4,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1243,12 +1328,12 @@
       }
     },
     {
-      "GUID": "c20022",
+      "GUID": "c20023",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -1.4,
-        "posY": 1.5,
-        "posZ": -5.735930515680213,
+        "posX": -15.2,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1300,12 +1385,12 @@
       }
     },
     {
-      "GUID": "c20023",
+      "GUID": "c20024",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0,
-        "posY": 1.5,
-        "posZ": -5.735930515680213,
+        "posX": -13,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1357,12 +1442,12 @@
       }
     },
     {
-      "GUID": "c20024",
+      "GUID": "c20025",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 1.4,
-        "posY": 1.5,
-        "posZ": -5.735930515680213,
+        "posX": -10.8,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1414,12 +1499,12 @@
       }
     },
     {
-      "GUID": "c20025",
+      "GUID": "c20026",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 2.8,
-        "posY": 1.5,
-        "posZ": -5.735930515680213,
+        "posX": -8.6,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1471,12 +1556,12 @@
       }
     },
     {
-      "GUID": "c20026",
+      "GUID": "c20027",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -2.8,
-        "posY": 1.5,
-        "posZ": -7.135930515680212,
+        "posX": -4.4,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1528,12 +1613,12 @@
       }
     },
     {
-      "GUID": "c20027",
+      "GUID": "c20028",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -1.4,
-        "posY": 1.5,
-        "posZ": -7.135930515680212,
+        "posX": -2.2,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1585,12 +1670,12 @@
       }
     },
     {
-      "GUID": "c20028",
+      "GUID": "c20029",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 0,
-        "posY": 1.5,
-        "posZ": -7.135930515680212,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1642,12 +1727,12 @@
       }
     },
     {
-      "GUID": "c20029",
+      "GUID": "c20030",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 1.4,
-        "posY": 1.5,
-        "posZ": -7.135930515680212,
+        "posX": 2.2,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1699,12 +1784,12 @@
       }
     },
     {
-      "GUID": "c20030",
+      "GUID": "c20031",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 2.8,
-        "posY": 1.5,
-        "posZ": -7.135930515680212,
+        "posX": 4.4,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1756,12 +1841,12 @@
       }
     },
     {
-      "GUID": "c20031",
+      "GUID": "c20032",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -2.8,
-        "posY": 1.5,
-        "posZ": -8.535930515680212,
+        "posX": 8.6,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1813,12 +1898,12 @@
       }
     },
     {
-      "GUID": "c20032",
+      "GUID": "c20033",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -1.4,
-        "posY": 1.5,
-        "posZ": -8.535930515680212,
+        "posX": 10.8,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1870,12 +1955,12 @@
       }
     },
     {
-      "GUID": "c20033",
+      "GUID": "c20034",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0,
-        "posY": 1.5,
-        "posZ": -8.535930515680212,
+        "posX": 13,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1927,12 +2012,12 @@
       }
     },
     {
-      "GUID": "c20034",
+      "GUID": "c20035",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 1.4,
-        "posY": 1.5,
-        "posZ": -8.535930515680212,
+        "posX": 15.2,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -1984,12 +2069,12 @@
       }
     },
     {
-      "GUID": "c20035",
+      "GUID": "c20036",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 2.8,
-        "posY": 1.5,
-        "posZ": -8.535930515680212,
+        "posX": 17.4,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -2041,12 +2126,12 @@
       }
     },
     {
-      "GUID": "c20036",
+      "GUID": "c20037",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -2.8,
-        "posY": 1.5,
-        "posZ": -9.935930515680212,
+        "posX": 21.6,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -2098,12 +2183,12 @@
       }
     },
     {
-      "GUID": "c20037",
+      "GUID": "c20038",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -1.4,
-        "posY": 1.5,
-        "posZ": -9.935930515680212,
+        "posX": 23.8,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -2155,12 +2240,12 @@
       }
     },
     {
-      "GUID": "c20038",
+      "GUID": "c20039",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0,
-        "posY": 1.5,
-        "posZ": -9.935930515680212,
+        "posX": 26,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -2212,12 +2297,12 @@
       }
     },
     {
-      "GUID": "c20039",
+      "GUID": "c20040",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 1.4,
-        "posY": 1.5,
-        "posZ": -9.935930515680212,
+        "posX": 28.2,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -2269,12 +2354,12 @@
       }
     },
     {
-      "GUID": "c20040",
+      "GUID": "c20041",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 2.8,
-        "posY": 1.5,
-        "posZ": -9.935930515680212,
+        "posX": 30.4,
+        "posY": 2,
+        "posZ": -12.28628456272085,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
@@ -2315,63 +2400,6 @@
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_5_a.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_5_b.jpg",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.2,
-          "Stackable": false,
-          "Stretch": true
-        }
-      }
-    },
-    {
-      "GUID": "c20041",
-      "Name": "Custom_Tile",
-      "Transform": {
-        "posX": 4.699999999999999,
-        "posY": 1.5,
-        "posZ": -4.335930515680213,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.657243816254417,
-        "scaleY": 1,
-        "scaleZ": 0.657243816254417
-      },
-      "Nickname": "Экспедиция +3",
-      "Description": "Второй стороны пока нет: оборот — копия лица.",
-      "GMNotes": "",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/exp_plus3.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/exp_plus3_back.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
