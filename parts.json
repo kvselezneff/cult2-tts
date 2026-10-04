@@ -18,7 +18,7 @@
                   {
                       "id":  "yellow",
                       "name":  "Жёлтая колода",
-                      "faces":  "deck_yellow_faces_aa3e06.jpg",
+                      "faces":  "deck_yellow_faces_d25ea0.jpg",
                       "back":  "deck_yellow_back_3764ec.jpg",
                       "cards":  [
                                     "Коммуникации",
@@ -33,7 +33,7 @@
                   {
                       "id":  "green",
                       "name":  "Зелёная колода",
-                      "faces":  "deck_green_faces_65f3d9.jpg",
+                      "faces":  "deck_green_faces_b3f0de.jpg",
                       "back":  "deck_green_back_e95018.jpg",
                       "cards":  [
                                     "Сады Предтеч",
@@ -48,15 +48,15 @@
               ],
     "expedition":  {
                        "name":  "Экспедиция",
-                       "face":  "expedition_1_7bd063.jpg",
-                       "back":  "expedition_2_29390d.jpg",
+                       "face":  "expedition_1_40b41a.jpg",
+                       "back":  "expedition_2_ac6531.jpg",
                        "w":  2436,
                        "h":  2354
                    },
     "bonus":  {
                   "name":  "Жетон +3 / +5",
-                  "face":  "bonus_3_ccccc7.jpg",
-                  "back":  "bonus_5_47483b.jpg",
+                  "face":  "bonus_3_497fb9.jpg",
+                  "back":  "bonus_5_166c83.jpg",
                   "w":  1440,
                   "h":  1440,
                   "copies":  5
@@ -65,47 +65,47 @@
                      {
                          "id":  "krysa",
                          "name":  "Крыса",
-                         "color":  "тёмно-синий",
+                         "color":  "чёрный",
                          "board":  {
                                        "name":  "Планшет: Крыса",
-                                       "face":  "board_krysa_1_1ab867.jpg",
-                                       "back":  "board_krysa_2_838cbd.jpg",
-                                       "w":  9383,
-                                       "h":  4402
+                                       "face":  "board_krysa_1_0137db.jpg",
+                                       "back":  "board_krysa_2_e22afe.jpg",
+                                       "w":  2436,
+                                       "h":  2370
                                    },
                          "tokens":  [
                                         {
-                                            "name":  "Жетон тёмно-синий 1 / 5",
-                                            "face":  "tok_darkblue_1_icon_3c2bd0.jpg",
-                                            "back":  "tok_darkblue_5_plain_ea46ad.jpg",
+                                            "name":  "Жетон чёрный 1 / 5",
+                                            "face":  "tok_black_1_icon_fad3c5.jpg",
+                                            "back":  "tok_black_5_plain_ea46ad.jpg",
                                             "w":  1182,
                                             "h":  1182
                                         },
                                         {
-                                            "name":  "Жетон тёмно-синий 2 / 4",
-                                            "face":  "tok_darkblue_2_icon_eafa1e.jpg",
-                                            "back":  "tok_darkblue_4_plain_021eee.jpg",
+                                            "name":  "Жетон чёрный 2 / 4",
+                                            "face":  "tok_black_2_icon_c8b810.jpg",
+                                            "back":  "tok_black_4_plain_021eee.jpg",
                                             "w":  1182,
                                             "h":  1182
                                         },
                                         {
-                                            "name":  "Жетон тёмно-синий 3 / 3",
-                                            "face":  "tok_darkblue_3_icon_c7b456.jpg",
-                                            "back":  "tok_darkblue_3_plain_627b9e.jpg",
+                                            "name":  "Жетон чёрный 3 / 3",
+                                            "face":  "tok_black_3_icon_00f019.jpg",
+                                            "back":  "tok_black_3_plain_627b9e.jpg",
                                             "w":  1182,
                                             "h":  1182
                                         },
                                         {
-                                            "name":  "Жетон тёмно-синий 4 / 2",
-                                            "face":  "tok_darkblue_4_icon_d47a56.jpg",
-                                            "back":  "tok_darkblue_2_plain_c6edca.jpg",
+                                            "name":  "Жетон чёрный 4 / 2",
+                                            "face":  "tok_black_4_icon_c73ca7.jpg",
+                                            "back":  "tok_black_2_plain_c6edca.jpg",
                                             "w":  1182,
                                             "h":  1182
                                         },
                                         {
-                                            "name":  "Жетон тёмно-синий 5 / 1",
-                                            "face":  "tok_darkblue_5_icon_d2b17e.jpg",
-                                            "back":  "tok_darkblue_1_plain_46fb2f.jpg",
+                                            "name":  "Жетон чёрный 5 / 1",
+                                            "face":  "tok_black_5_icon_2981cd.jpg",
+                                            "back":  "tok_black_1_plain_46fb2f.jpg",
                                             "w":  1182,
                                             "h":  1182
                                         }
@@ -117,10 +117,10 @@
                          "color":  "охра",
                          "board":  {
                                        "name":  "Планшет: Таракан",
-                                       "face":  "board_tarakan_1_3be59c.jpg",
-                                       "back":  "board_tarakan_2_d6e970.jpg",
-                                       "w":  9427,
-                                       "h":  4402
+                                       "face":  "board_tarakan_1_393abd.jpg",
+                                       "back":  "board_tarakan_2_408d83.jpg",
+                                       "w":  2436,
+                                       "h":  2370
                                    },
                          "tokens":  [
                                         {
@@ -132,14 +132,14 @@
                                         },
                                         {
                                             "name":  "Жетон охра 2 / 4",
-                                            "face":  "tok_ochre_2_icon_ee79a8.jpg",
+                                            "face":  "tok_ochre_2_icon_70f11c.jpg",
                                             "back":  "tok_ochre_4_plain_31c34b.jpg",
                                             "w":  1182,
                                             "h":  1182
                                         },
                                         {
                                             "name":  "Жетон охра 3 / 3",
-                                            "face":  "tok_ochre_3_icon_1041ee.jpg",
+                                            "face":  "tok_ochre_3_icon_b1c2c2.jpg",
                                             "back":  "tok_ochre_3_plain_90c149.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -153,7 +153,7 @@
                                         },
                                         {
                                             "name":  "Жетон охра 5 / 1",
-                                            "face":  "tok_ochre_5_icon_e1058e.jpg",
+                                            "face":  "tok_ochre_5_icon_3dcea2.jpg",
                                             "back":  "tok_ochre_1_plain_ddd57b.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -166,10 +166,10 @@
                          "color":  "светло-серый",
                          "board":  {
                                        "name":  "Планшет: Ворона",
-                                       "face":  "board_vorona_1_adaa8e.jpg",
-                                       "back":  "board_vorona_2_df6cca.jpg",
-                                       "w":  9437,
-                                       "h":  4402
+                                       "face":  "board_vorona_1_ff2155.jpg",
+                                       "back":  "board_vorona_2_d0e15d.jpg",
+                                       "w":  2436,
+                                       "h":  2370
                                    },
                          "tokens":  [
                                         {
@@ -181,14 +181,14 @@
                                         },
                                         {
                                             "name":  "Жетон светло-серый 2 / 4",
-                                            "face":  "tok_lightgray_2_icon_ae560b.jpg",
+                                            "face":  "tok_lightgray_2_icon_15e509.jpg",
                                             "back":  "tok_lightgray_4_plain_ab8b78.jpg",
                                             "w":  1182,
                                             "h":  1182
                                         },
                                         {
                                             "name":  "Жетон светло-серый 3 / 3",
-                                            "face":  "tok_lightgray_3_icon_e2fbc9.jpg",
+                                            "face":  "tok_lightgray_3_icon_7421c1.jpg",
                                             "back":  "tok_lightgray_3_plain_10c551.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -202,7 +202,7 @@
                                         },
                                         {
                                             "name":  "Жетон светло-серый 5 / 1",
-                                            "face":  "tok_lightgray_5_icon_b32f18.jpg",
+                                            "face":  "tok_lightgray_5_icon_4d81db.jpg",
                                             "back":  "tok_lightgray_1_plain_12fcc6.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -215,10 +215,10 @@
                          "color":  "оливковый",
                          "board":  {
                                        "name":  "Планшет: Ящер",
-                                       "face":  "board_yashcher_1_2debcd.jpg",
-                                       "back":  "board_yashcher_2_d650f6.jpg",
-                                       "w":  9437,
-                                       "h":  4402
+                                       "face":  "board_yashcher_1_c53f30.jpg",
+                                       "back":  "board_yashcher_2_4fafa0.jpg",
+                                       "w":  2436,
+                                       "h":  2370
                                    },
                          "tokens":  [
                                         {
@@ -230,14 +230,14 @@
                                         },
                                         {
                                             "name":  "Жетон оливковый 2 / 4",
-                                            "face":  "tok_olive_2_icon_d8ca7c.jpg",
+                                            "face":  "tok_olive_2_icon_fa1fb7.jpg",
                                             "back":  "tok_olive_4_plain_b59fe5.jpg",
                                             "w":  1182,
                                             "h":  1182
                                         },
                                         {
                                             "name":  "Жетон оливковый 3 / 3",
-                                            "face":  "tok_olive_3_icon_1fab05.jpg",
+                                            "face":  "tok_olive_3_icon_78c278.jpg",
                                             "back":  "tok_olive_3_plain_c55dc5.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -251,7 +251,7 @@
                                         },
                                         {
                                             "name":  "Жетон оливковый 5 / 1",
-                                            "face":  "tok_olive_5_icon_091e65.jpg",
+                                            "face":  "tok_olive_5_icon_2f30eb.jpg",
                                             "back":  "tok_olive_1_plain_7ce22a.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -264,10 +264,10 @@
                          "color":  "синий",
                          "board":  {
                                        "name":  "Планшет: Обезьяна",
-                                       "face":  "board_obezyana_1_141c62.jpg",
-                                       "back":  "board_obezyana_2_a9c595.jpg",
-                                       "w":  9437,
-                                       "h":  4402
+                                       "face":  "board_obezyana_1_1965fb.jpg",
+                                       "back":  "board_obezyana_2_8c4810.jpg",
+                                       "w":  2439,
+                                       "h":  2370
                                    },
                          "tokens":  [
                                         {
@@ -279,14 +279,14 @@
                                         },
                                         {
                                             "name":  "Жетон синий 2 / 4",
-                                            "face":  "tok_blue_2_icon_a8fb25.jpg",
+                                            "face":  "tok_blue_2_icon_39d291.jpg",
                                             "back":  "tok_blue_4_plain_4ab4bb.jpg",
                                             "w":  1182,
                                             "h":  1182
                                         },
                                         {
                                             "name":  "Жетон синий 3 / 3",
-                                            "face":  "tok_blue_3_icon_93b008.jpg",
+                                            "face":  "tok_blue_3_icon_bc3cb0.jpg",
                                             "back":  "tok_blue_3_plain_b733d0.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -300,7 +300,7 @@
                                         },
                                         {
                                             "name":  "Жетон синий 5 / 1",
-                                            "face":  "tok_blue_5_icon_7a83f3.jpg",
+                                            "face":  "tok_blue_5_icon_1c3dc8.jpg",
                                             "back":  "tok_blue_1_plain_8e2076.jpg",
                                             "w":  1182,
                                             "h":  1182

@@ -1,7 +1,7 @@
 {
   "SaveName": "Cult2",
-  "EpochTime": 1791133482,
-  "Date": "10/4/2026, 8:04:42 PM",
+  "EpochTime": 1791141005,
+  "Date": "10/4/2026, 10:10:05 PM",
   "VersionNumber": "v14.2.1",
   "GameMode": "Cult2",
   "GameType": "Game",
@@ -695,19 +695,19 @@
       "GUID": "c20002",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -28.834,
+        "posX": -30.766,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
-        "scaleX": 3.7301794638800545,
+        "scaleX": 1.79873417721519,
         "scaleY": 1,
         "scaleZ": 1.75
       },
       "Nickname": "Планшет: Крыса",
       "Description": "",
-      "GMNotes": "size:7.460x3.500",
+      "GMNotes": "size:3.597x3.500",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -736,8 +736,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_krysa_1_1ab867.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_krysa_2_838cbd.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_krysa_1_0137db.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_krysa_2_e22afe.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -752,7 +752,7 @@
       "GUID": "c20003",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -23.577,
+        "posX": -27.44,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -762,7 +762,7 @@
         "scaleY": 1,
         "scaleZ": 0.527230246389125
       },
-      "Nickname": "Жетон тёмно-синий 1 / 5",
+      "Nickname": "Жетон чёрный 1 / 5",
       "Description": "",
       "GMNotes": "size:1.054x1.054",
       "AltLookAngle": {
@@ -793,8 +793,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_1_icon_3c2bd0.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_5_plain_ea46ad.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_1_icon_fad3c5.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_5_plain_ea46ad.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -809,7 +809,7 @@
       "GUID": "c20004",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -22.222,
+        "posX": -26.085,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -819,7 +819,7 @@
         "scaleY": 1,
         "scaleZ": 0.527230246389125
       },
-      "Nickname": "Жетон тёмно-синий 2 / 4",
+      "Nickname": "Жетон чёрный 2 / 4",
       "Description": "",
       "GMNotes": "size:1.054x1.054",
       "AltLookAngle": {
@@ -850,8 +850,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_2_icon_eafa1e.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_4_plain_021eee.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_2_icon_c8b810.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_4_plain_021eee.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -866,7 +866,7 @@
       "GUID": "c20005",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -20.868,
+        "posX": -24.731,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -876,7 +876,7 @@
         "scaleY": 1,
         "scaleZ": 0.527230246389125
       },
-      "Nickname": "Жетон тёмно-синий 3 / 3",
+      "Nickname": "Жетон чёрный 3 / 3",
       "Description": "",
       "GMNotes": "size:1.054x1.054",
       "AltLookAngle": {
@@ -907,8 +907,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_3_icon_c7b456.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_3_plain_627b9e.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_3_icon_00f019.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_3_plain_627b9e.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -923,7 +923,7 @@
       "GUID": "c20006",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -19.513,
+        "posX": -23.376,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -933,7 +933,7 @@
         "scaleY": 1,
         "scaleZ": 0.527230246389125
       },
-      "Nickname": "Жетон тёмно-синий 4 / 2",
+      "Nickname": "Жетон чёрный 4 / 2",
       "Description": "",
       "GMNotes": "size:1.054x1.054",
       "AltLookAngle": {
@@ -964,8 +964,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_4_icon_d47a56.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_2_plain_c6edca.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_4_icon_c73ca7.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_2_plain_c6edca.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -980,7 +980,7 @@
       "GUID": "c20007",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -18.159,
+        "posX": -22.022,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -990,7 +990,7 @@
         "scaleY": 1,
         "scaleZ": 0.527230246389125
       },
-      "Nickname": "Жетон тёмно-синий 5 / 1",
+      "Nickname": "Жетон чёрный 5 / 1",
       "Description": "",
       "GMNotes": "size:1.054x1.054",
       "AltLookAngle": {
@@ -1021,8 +1021,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_5_icon_d2b17e.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_darkblue_1_plain_46fb2f.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_5_icon_2981cd.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_black_1_plain_46fb2f.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -1037,19 +1037,19 @@
       "GUID": "c20008",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -6.107,
+        "posX": -8.056,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
-        "scaleX": 3.7476715129486595,
+        "scaleX": 1.79873417721519,
         "scaleY": 1,
         "scaleZ": 1.75
       },
       "Nickname": "Планшет: Таракан",
       "Description": "",
-      "GMNotes": "size:7.495x3.500",
+      "GMNotes": "size:3.597x3.500",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1078,8 +1078,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_tarakan_1_3be59c.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_tarakan_2_d6e970.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_tarakan_1_393abd.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_tarakan_2_408d83.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -1094,7 +1094,7 @@
       "GUID": "c20009",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -0.832,
+        "posX": -4.73,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1151,7 +1151,7 @@
       "GUID": "c2000a",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 0.522,
+        "posX": -3.376,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1192,7 +1192,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_2_icon_ee79a8.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_2_icon_70f11c.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_4_plain_31c34b.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -1208,7 +1208,7 @@
       "GUID": "c2000b",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 1.877,
+        "posX": -2.021,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1249,7 +1249,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_3_icon_1041ee.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_3_icon_b1c2c2.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_3_plain_90c149.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -1265,7 +1265,7 @@
       "GUID": "c2000c",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 3.231,
+        "posX": -0.667,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1322,7 +1322,7 @@
       "GUID": "c2000d",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 4.586,
+        "posX": 0.688,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1363,7 +1363,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_5_icon_e1058e.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_5_icon_3dcea2.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_ochre_1_plain_ddd57b.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -1379,19 +1379,19 @@
       "GUID": "c2000e",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 16.606,
+        "posX": 14.654,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
-        "scaleX": 3.75164697864607,
+        "scaleX": 1.79873417721519,
         "scaleY": 1,
         "scaleZ": 1.75
       },
       "Nickname": "Планшет: Ворона",
       "Description": "",
-      "GMNotes": "size:7.503x3.500",
+      "GMNotes": "size:3.597x3.500",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1420,8 +1420,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_vorona_1_adaa8e.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_vorona_2_df6cca.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_vorona_1_ff2155.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_vorona_2_d0e15d.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -1436,7 +1436,7 @@
       "GUID": "c2000f",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 21.885,
+        "posX": 17.979,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1493,7 +1493,7 @@
       "GUID": "c20010",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 23.24,
+        "posX": 19.334,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1534,7 +1534,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_2_icon_ae560b.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_2_icon_15e509.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_4_plain_ab8b78.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -1550,7 +1550,7 @@
       "GUID": "c20011",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 24.594,
+        "posX": 20.688,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1591,7 +1591,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_3_icon_e2fbc9.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_3_icon_7421c1.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_3_plain_10c551.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -1607,7 +1607,7 @@
       "GUID": "c20012",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 25.949,
+        "posX": 22.043,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1664,7 +1664,7 @@
       "GUID": "c20013",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 27.303,
+        "posX": 23.397,
         "posY": 2,
         "posZ": -19.25,
         "rotX": 0,
@@ -1705,7 +1705,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_5_icon_b32f18.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_5_icon_4d81db.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_lightgray_1_plain_12fcc6.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -1721,19 +1721,19 @@
       "GUID": "c20014",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -5.252,
+        "posX": -3.299,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
-        "scaleX": 3.75164697864607,
+        "scaleX": 1.79873417721519,
         "scaleY": 1,
         "scaleZ": 1.75
       },
       "Nickname": "Планшет: Ящер",
       "Description": "",
-      "GMNotes": "size:7.503x3.500",
+      "GMNotes": "size:3.597x3.500",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1762,8 +1762,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_yashcher_1_2debcd.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_yashcher_2_d650f6.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_yashcher_1_c53f30.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_yashcher_2_4fafa0.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -1778,7 +1778,7 @@
       "GUID": "c20015",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -10.531,
+        "posX": -6.625,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -1835,7 +1835,7 @@
       "GUID": "c20016",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -11.885,
+        "posX": -7.979,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -1876,7 +1876,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_2_icon_d8ca7c.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_2_icon_fa1fb7.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_4_plain_b59fe5.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -1892,7 +1892,7 @@
       "GUID": "c20017",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -13.239,
+        "posX": -9.334,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -1933,7 +1933,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_3_icon_1fab05.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_3_icon_78c278.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_3_plain_c55dc5.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -1949,7 +1949,7 @@
       "GUID": "c20018",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -14.594,
+        "posX": -10.688,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -2006,7 +2006,7 @@
       "GUID": "c20019",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": -15.948,
+        "posX": -12.043,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -2047,7 +2047,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_5_icon_091e65.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_5_icon_2f30eb.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_olive_1_plain_7ce22a.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -2063,19 +2063,19 @@
       "GUID": "c2001a",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 17.458,
+        "posX": 19.409,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
         "rotY": 0,
         "rotZ": 0,
-        "scaleX": 3.75164697864607,
+        "scaleX": 1.8009493670886076,
         "scaleY": 1,
         "scaleZ": 1.75
       },
       "Nickname": "Планшет: Обезьяна",
       "Description": "",
-      "GMNotes": "size:7.503x3.500",
+      "GMNotes": "size:3.602x3.500",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2104,8 +2104,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_obezyana_1_141c62.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_obezyana_2_a9c595.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_obezyana_1_1965fb.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/board_obezyana_2_8c4810.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -2120,7 +2120,7 @@
       "GUID": "c2001b",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 12.179,
+        "posX": 16.08,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -2177,7 +2177,7 @@
       "GUID": "c2001c",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 10.825,
+        "posX": 14.726,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -2218,7 +2218,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_2_icon_a8fb25.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_2_icon_39d291.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_4_plain_4ab4bb.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -2234,7 +2234,7 @@
       "GUID": "c2001d",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 9.47,
+        "posX": 13.372,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -2275,7 +2275,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_3_icon_93b008.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_3_icon_bc3cb0.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_3_plain_b733d0.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -2291,7 +2291,7 @@
       "GUID": "c2001e",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 8.116,
+        "posX": 12.017,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -2348,7 +2348,7 @@
       "GUID": "c2001f",
       "Name": "Custom_Tile",
       "Transform": {
-        "posX": 6.761,
+        "posX": 10.663,
         "posY": 2,
         "posZ": 19.25,
         "rotX": 0,
@@ -2389,7 +2389,7 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_5_icon_7a83f3.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_5_icon_1c3dc8.jpg",
         "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/tok_blue_1_plain_8e2076.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
@@ -2446,8 +2446,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/expedition_1_7bd063.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/expedition_2_29390d.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/expedition_1_40b41a.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/expedition_2_ac6531.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -4068,7 +4068,7 @@
       ],
       "CustomDeck": {
         "2": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
           "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
           "NumWidth": 3,
           "NumHeight": 2,
@@ -4126,7 +4126,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4184,7 +4184,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4242,7 +4242,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4300,7 +4300,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4358,7 +4358,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4416,7 +4416,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4474,7 +4474,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4532,7 +4532,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4590,7 +4590,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4648,7 +4648,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4706,7 +4706,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4764,7 +4764,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4822,7 +4822,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4880,7 +4880,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4938,7 +4938,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -4996,7 +4996,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5054,7 +5054,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5112,7 +5112,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5170,7 +5170,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5228,7 +5228,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5286,7 +5286,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5344,7 +5344,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5402,7 +5402,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5460,7 +5460,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5518,7 +5518,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_aa3e06.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_d25ea0.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5604,7 +5604,7 @@
       ],
       "CustomDeck": {
         "3": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
           "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
           "NumWidth": 3,
           "NumHeight": 2,
@@ -5662,7 +5662,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5720,7 +5720,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5778,7 +5778,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5836,7 +5836,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5894,7 +5894,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -5952,7 +5952,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6010,7 +6010,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6068,7 +6068,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6126,7 +6126,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6184,7 +6184,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6242,7 +6242,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6300,7 +6300,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6358,7 +6358,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6416,7 +6416,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6474,7 +6474,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6532,7 +6532,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6590,7 +6590,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6648,7 +6648,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6706,7 +6706,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6764,7 +6764,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6822,7 +6822,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6880,7 +6880,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6938,7 +6938,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -6996,7 +6996,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -7054,7 +7054,7 @@
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_65f3d9.jpg",
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b3f0de.jpg",
               "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
               "NumWidth": 3,
               "NumHeight": 2,
@@ -7111,8 +7111,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_ccccc7.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_47483b.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_497fb9.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_166c83.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -7168,8 +7168,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_ccccc7.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_47483b.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_497fb9.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_166c83.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -7225,8 +7225,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_ccccc7.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_47483b.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_497fb9.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_166c83.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -7282,8 +7282,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_ccccc7.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_47483b.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_497fb9.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_166c83.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
@@ -7339,8 +7339,8 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_ccccc7.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_47483b.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_3_497fb9.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/bonus_5_166c83.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
         "CustomTile": {
