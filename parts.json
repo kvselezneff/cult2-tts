@@ -3,7 +3,7 @@
                   {
                       "id":  "red",
                       "name":  "Красная колода",
-                      "faces":  "deck_red_faces_31059c.jpg",
+                      "faces":  "deck_red_faces_f07858.jpg",
                       "back":  "deck_red_back_789071.jpg",
                       "cards":  [
                                     "Блокпост",
@@ -196,7 +196,7 @@
                          "board":  {
                                        "name":  "Планшет: Ящер",
                                        "face":  "board_yashcher_1_c53f30.jpg",
-                                       "back":  "board_yashcher_2_eae089.jpg",
+                                       "back":  "board_yashcher_2_fd9c3d.jpg",
                                        "w":  2436,
                                        "h":  2370
                                    },
