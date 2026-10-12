@@ -1,7 +1,7 @@
 {
   "SaveName": "Cult2",
-  "EpochTime": 1791821388,
-  "Date": "10/12/2026, 7:09:48 PM",
+  "EpochTime": 1791822285,
+  "Date": "10/12/2026, 7:24:45 PM",
   "VersionNumber": "v14.2.1",
   "GameMode": "Cult2",
   "GameType": "Game",
@@ -40,9 +40,9 @@
     "TurnColor": ""
   },
   "DecalPallet": [],
-  "LuaScript": "-- Cult2. При первой загрузке доводит размеры объектов до заданных в GMNotes «size:ШxГ»\n-- (единицы стола), затем запоминает это в состоянии скрипта. Колоды пересоздаются целиком, чтобы\n-- новый масштаб был и у карт внутри. Мешок Металла получает жетон уже правильного размера.\n-- Объекты с меткой settle лежат закреплёнными, пока меняются размеры; потом каждый кладётся ровно\n-- на поверхность стола (стопки — друг на друга), скорость гасится, закрепление снимается.\nlocal done = false\n\nfunction onSave()\n  if done then return 'calibrated' end\nend\n\nfunction onLoad(state)\n  if state == 'calibrated' then done = true return end\n  Wait.condition(calibrate, function()\n    for _, o in ipairs(getObjects()) do\n      if o.loading_custom then return false end\n    end\n    return true\n  end, 60, calibrate)\nend\n\nlocal function target(o)\n  local w, h = (o.getGMNotes() or ''):match('size:([%d%.]+)x([%d%.]+)')\n  if w then return tonumber(w), tonumber(h) end\nend\n\nfunction calibrate()\n  if done then return end\n  done = true\n  local probe, bag\n  for _, o in ipairs(getObjects()) do\n    local note = o.getGMNotes() or ''\n    if note == 'metalbag' then bag = o end\n    local tw, th = target(o)\n    if tw then\n      local b = o.getBoundsNormalized().size\n      local fx, fz = tw / b.x, th / b.z\n      if o.type == 'Deck' then\n        local d = JSON.decode(o.getJSON())\n        local function sc(t) t.Transform.scaleX = t.Transform.scaleX * fx; t.Transform.scaleZ = t.Transform.scaleZ * fz end\n        sc(d)\n        for _, c in ipairs(d.ContainedObjects or {}) do sc(c) end\n        o.destruct()\n        spawnObjectJSON({ json = JSON.encode(d) })\n      else\n        local s = o.getScale()\n        o.setScale({ s.x * fx, s.y, s.z * fz })\n      end\n      if note:find(';metal') then probe = o end\n    end\n  end\n  Wait.frames(function()\n    if probe and bag then\n      local p = JSON.decode(probe.getJSON())\n      p.GMNotes = ''\n      p.Locked = false\n      local d = JSON.decode(bag.getJSON())\n      d.ContainedObjects = { p }\n      bag.destruct()\n      probe.destruct()\n      spawnObjectJSON({ json = JSON.encode(d) })\n    end\n    Wait.frames(settle, 10)\n  end, 10)\nend\n\nfunction settle()\n  local top = 1\n  local list = {}\n  for _, o in ipairs(getObjects()) do\n    if o.getName() == 'Стол' then\n      local b = o.getBounds()\n      top = b.center.y + b.size.y / 2\n    end\n    if (o.getGMNotes() or ''):find(';settle') then table.insert(list, o) end\n  end\n  table.sort(list, function(a, b) return a.getPosition().y < b.getPosition().y end)\n  local level = {}\n  for _, o in ipairs(list) do\n    local p, b = o.getPosition(), o.getBounds()\n    local key = math.floor(p.x * 10 + 0.5) .. ',' .. math.floor(p.z * 10 + 0.5)\n    local floor = level[key] or top\n    local bottom = b.center.y - b.size.y / 2\n    o.setPosition({ p.x, p.y + (floor + 0.01 - bottom), p.z })\n    level[key] = floor + 0.01 + b.size.y\n    o.setVelocity({ 0, 0, 0 })\n    o.setAngularVelocity({ 0, 0, 0 })\n    o.setGMNotes((o.getGMNotes():gsub(';settle', '')))\n    o.setLock(false)\n  end\n  broadcastToAll('Cult2: размеры компонентов выставлены. Сохраните игру, чтобы так и осталось.', { 0.9, 0.8, 0.5 })\nend\n",
+  "LuaScript": "-- Cult2. При первой загрузке доводит размеры объектов до заданных в GMNotes «size:ШxГ»\n-- (единицы стола), затем запоминает это в состоянии скрипта. Колоды пересоздаются целиком, чтобы\n-- новый масштаб был и у карт внутри. Мешок Металла получает жетон уже правильного размера.\n-- Объекты с меткой settle лежат закреплёнными, пока меняются размеры; потом каждый кладётся ровно\n-- на поверхность стола (стопки — друг на друга), скорость гасится, закрепление снимается.\nlocal done = false\nlocal tableTop = 1\n\n-- центральная сетка: в ряду (красный, жёлтый, зелёный) место колоды и три места выкладки (x, z)\nlocal SLOTS = {\n  { deck = { -4.789, 4.667 }, cards = { { -0.000, 4.667 }, { 4.789, 4.667 }, { 9.577, 4.667 } } },\n  { deck = { -4.789, 0.000 }, cards = { { -0.000, 0.000 }, { 4.789, 0.000 }, { 9.577, 0.000 } } },\n  { deck = { -4.789, -4.667 }, cards = { { -0.000, -4.667 }, { 4.789, -4.667 }, { 9.577, -4.667 } } },\n}\n\nfunction onSave()\n  if done then return 'calibrated' end\nend\n\nfunction onLoad(state)\n  if state == 'calibrated' then\n    done = true\n    -- сценарий, сохранённый до начала партии, при каждой загрузке раскладывается заново\n    Wait.frames(function() if untouched() then deal() end end, 30)\n    return\n  end\n  Wait.condition(calibrate, function()\n    for _, o in ipairs(getObjects()) do\n      if o.loading_custom then return false end\n    end\n    return true\n  end, 60, calibrate)\nend\n\nlocal function target(o)\n  local w, h = (o.getGMNotes() or ''):match('size:([%d%.]+)x([%d%.]+)')\n  if w then return tonumber(w), tonumber(h) end\nend\n\nfunction calibrate()\n  if done then return end\n  done = true\n  local probe, bag\n  for _, o in ipairs(getObjects()) do\n    local note = o.getGMNotes() or ''\n    if note == 'metalbag' then bag = o end\n    local tw, th = target(o)\n    if tw then\n      local b = o.getBoundsNormalized().size\n      local fx, fz = tw / b.x, th / b.z\n      if o.type == 'Deck' then\n        local d = JSON.decode(o.getJSON())\n        local function sc(t) t.Transform.scaleX = t.Transform.scaleX * fx; t.Transform.scaleZ = t.Transform.scaleZ * fz end\n        sc(d)\n        for _, c in ipairs(d.ContainedObjects or {}) do sc(c) end\n        o.destruct()\n        spawnObjectJSON({ json = JSON.encode(d) })\n      else\n        local s = o.getScale()\n        o.setScale({ s.x * fx, s.y, s.z * fz })\n      end\n      if note:find(';metal') then probe = o end\n    end\n  end\n  Wait.frames(function()\n    if probe and bag then\n      local p = JSON.decode(probe.getJSON())\n      p.GMNotes = ''\n      p.Locked = false\n      local d = JSON.decode(bag.getJSON())\n      d.ContainedObjects = { p }\n      bag.destruct()\n      probe.destruct()\n      spawnObjectJSON({ json = JSON.encode(d) })\n    end\n    Wait.frames(settle, 10)\n  end, 10)\nend\n\nfunction settle()\n  local top = 1\n  local list = {}\n  for _, o in ipairs(getObjects()) do\n    if o.getName() == 'Стол' then\n      local b = o.getBounds()\n      top = b.center.y + b.size.y / 2\n      tableTop = top\n    end\n    if (o.getGMNotes() or ''):find(';settle') then table.insert(list, o) end\n  end\n  table.sort(list, function(a, b) return a.getPosition().y < b.getPosition().y end)\n  local level = {}\n  for _, o in ipairs(list) do\n    local p, b = o.getPosition(), o.getBounds()\n    local key = math.floor(p.x * 10 + 0.5) .. ',' .. math.floor(p.z * 10 + 0.5)\n    local floor = level[key] or top\n    local bottom = b.center.y - b.size.y / 2\n    o.setPosition({ p.x, p.y + (floor + 0.01 - bottom), p.z })\n    level[key] = floor + 0.01 + b.size.y\n    o.setVelocity({ 0, 0, 0 })\n    o.setAngularVelocity({ 0, 0, 0 })\n    o.setGMNotes((o.getGMNotes():gsub(';settle', '')))\n    o.setLock(false)\n  end\n  Wait.frames(deal, 10)\nend\n\n-- Выкладка: карты из мест выкладки возвращаются в колоду своего ряда, колода перемешивается,\n-- из неё лицом вверх выкладываются 3 карты. Вызывается при загрузке сценария и кнопкой «Новая раздача».\nlocal function near(p, q) return math.abs(p.x - q[1]) < 1 and math.abs(p.z - q[2]) < 1 end\n\n-- партия не начата: все 75 локаций в колодах и на местах выкладки, у игроков ни одной\nfunction untouched()\n  local n = 0\n  for _, o in ipairs(getObjects()) do\n    if o.type == 'Deck' then n = n + o.getQuantity() end\n    if o.type == 'Card' then\n      for _, row in ipairs(SLOTS) do\n        for _, c in ipairs(row.cards) do if near(o.getPosition(), c) then n = n + 1 end end\n      end\n    end\n  end\n  return n == 75\nend\n\nfunction deal()\n  for _, o in ipairs(getObjects()) do\n    if o.getName() == 'Стол' then local b = o.getBounds() tableTop = b.center.y + b.size.y / 2 end\n  end\n  local decks = {}\n  for i, row in ipairs(SLOTS) do\n    for _, o in ipairs(getObjects()) do\n      if o.type == 'Deck' and near(o.getPosition(), row.deck) then decks[i] = o end\n    end\n    if not decks[i] then\n      broadcastToAll('Cult2: на месте колоды в ряду ' .. i .. ' колоды нет — раздача отменена.', { 1, 0.4, 0.4 })\n      return\n    end\n  end\n  for i, row in ipairs(SLOTS) do\n    for _, o in ipairs(getObjects()) do\n      if o.type == 'Card' then\n        for _, c in ipairs(row.cards) do\n          if near(o.getPosition(), c) then decks[i].putObject(o) break end\n        end\n      end\n    end\n  end\n  Wait.frames(function()\n    for i, row in ipairs(SLOTS) do\n      decks[i].shuffle()\n      for _, c in ipairs(row.cards) do\n        decks[i].takeObject({ position = { c[1], tableTop + 0.3, c[2] }, rotation = { 0, 180, 0 }, smooth = false })\n      end\n    end\n    broadcastToAll('Cult2: колоды перемешаны, локации раунда выложены.', { 0.9, 0.8, 0.5 })\n  end, 20)\nend\n\nfunction onRedeal(player)\n  deal()\nend\n",
   "LuaScriptState": "",
-  "XmlUI": "",
+  "XmlUI": "<Button onClick=\"onRedeal\" rectAlignment=\"UpperRight\" offsetXY=\"-20 -80\" width=\"180\" height=\"36\" fontSize=\"16\">Новая раздача</Button>",
   "SnapPoints": [
     {
       "Position": {
@@ -3664,7 +3664,7 @@
       }
     },
     {
-      "GUID": "c2002e",
+      "GUID": "c2002b",
       "Name": "Deck",
       "Transform": {
         "posX": -4.789,
@@ -3709,28 +3709,31 @@
       "XmlUI": "",
       "SidewaysCard": false,
       "DeckIDs": [
-        101,
-        104,
         100,
-        104,
-        104,
+        100,
+        100,
+        100,
+        100,
+        101,
+        101,
+        101,
+        101,
+        101,
+        102,
+        102,
+        102,
         102,
         102,
         103,
-        101,
-        100,
-        100,
-        100,
-        102,
-        101,
         103,
-        100,
+        103,
+        103,
         103,
         104,
-        102,
-        102,
         104,
-        101
+        104,
+        104,
+        104
       ],
       "CustomDeck": {
         "1": {
@@ -3745,123 +3748,7 @@
       },
       "ContainedObjects": [
         {
-          "GUID": "c2002f",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Резерв",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 101,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20030",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Гараж",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 104,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20031",
+          "GUID": "c2002c",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -3919,7 +3806,7 @@
           }
         },
         {
-          "GUID": "c20032",
+          "GUID": "c2002d",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -3932,7 +3819,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Гараж",
+          "Nickname": "Блокпост",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -3962,7 +3849,297 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 104,
+          "CardID": 100,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c2002e",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Блокпост",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 100,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c2002f",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Блокпост",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 100,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20030",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Блокпост",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 100,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20031",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Резерв",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 101,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20032",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Резерв",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 101,
           "SidewaysCard": false,
           "CustomDeck": {
             "1": {
@@ -3990,7 +4167,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Гараж",
+          "Nickname": "Резерв",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -4020,7 +4197,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 104,
+          "CardID": 101,
           "SidewaysCard": false,
           "CustomDeck": {
             "1": {
@@ -4048,7 +4225,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Окраина",
+          "Nickname": "Резерв",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -4078,7 +4255,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 102,
+          "CardID": 101,
           "SidewaysCard": false,
           "CustomDeck": {
             "1": {
@@ -4094,6 +4271,64 @@
         },
         {
           "GUID": "c20035",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Резерв",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 101,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20036",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -4151,7 +4386,239 @@
           }
         },
         {
-          "GUID": "c20036",
+          "GUID": "c20037",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Окраина",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 102,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20038",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Окраина",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 102,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20039",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Окраина",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 102,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c2003a",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Окраина",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 102,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "1": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c2003b",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -4209,296 +4676,6 @@
           }
         },
         {
-          "GUID": "c20037",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Резерв",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 101,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20038",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Блокпост",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 100,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20039",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Блокпост",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 100,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c2003a",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Блокпост",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 100,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c2003b",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Окраина",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 102,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
           "GUID": "c2003c",
           "Name": "Card",
           "Transform": {
@@ -4512,7 +4689,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Резерв",
+          "Nickname": "Засада",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -4542,7 +4719,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 101,
+          "CardID": 103,
           "SidewaysCard": false,
           "CustomDeck": {
             "1": {
@@ -4628,7 +4805,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Блокпост",
+          "Nickname": "Засада",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -4658,7 +4835,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 100,
+          "CardID": 103,
           "SidewaysCard": false,
           "CustomDeck": {
             "1": {
@@ -4802,7 +4979,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Окраина",
+          "Nickname": "Гараж",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -4832,7 +5009,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 102,
+          "CardID": 104,
           "SidewaysCard": false,
           "CustomDeck": {
             "1": {
@@ -4860,7 +5037,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Окраина",
+          "Nickname": "Гараж",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -4890,7 +5067,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 102,
+          "CardID": 104,
           "SidewaysCard": false,
           "CustomDeck": {
             "1": {
@@ -4976,7 +5153,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Резерв",
+          "Nickname": "Гараж",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -5006,7 +5183,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 101,
+          "CardID": 104,
           "SidewaysCard": false,
           "CustomDeck": {
             "1": {
@@ -5036,220 +5213,7 @@
       }
     },
     {
-      "GUID": "c2002b",
-      "Name": "Card",
-      "Transform": {
-        "posX": 0,
-        "posY": 1.2,
-        "posZ": 4.667,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6463273345176488,
-        "scaleY": 1,
-        "scaleZ": 1.1666666666666667
-      },
-      "Nickname": "Засада",
-      "Description": "",
-      "GMNotes": "size:3.622x3.500;settle",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CardID": 103,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "1": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-          "NumWidth": 3,
-          "NumHeight": 2,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 1
-        }
-      },
-      "PhysicsMaterial": {
-        "StaticFriction": 1,
-        "DynamicFriction": 1,
-        "Bounciness": 0,
-        "FrictionCombine": 3,
-        "BounceCombine": 1
-      },
-      "Rigidbody": {
-        "Mass": 1,
-        "Drag": 2,
-        "AngularDrag": 10,
-        "UseGravity": true
-      }
-    },
-    {
-      "GUID": "c2002c",
-      "Name": "Card",
-      "Transform": {
-        "posX": 4.789,
-        "posY": 1.2,
-        "posZ": 4.667,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6463273345176488,
-        "scaleY": 1,
-        "scaleZ": 1.1666666666666667
-      },
-      "Nickname": "Засада",
-      "Description": "",
-      "GMNotes": "size:3.622x3.500;settle",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CardID": 103,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "1": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-          "NumWidth": 3,
-          "NumHeight": 2,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 1
-        }
-      },
-      "PhysicsMaterial": {
-        "StaticFriction": 1,
-        "DynamicFriction": 1,
-        "Bounciness": 0,
-        "FrictionCombine": 3,
-        "BounceCombine": 1
-      },
-      "Rigidbody": {
-        "Mass": 1,
-        "Drag": 2,
-        "AngularDrag": 10,
-        "UseGravity": true
-      }
-    },
-    {
-      "GUID": "c2002d",
-      "Name": "Card",
-      "Transform": {
-        "posX": 9.577,
-        "posY": 1.2,
-        "posZ": 4.667,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6463273345176488,
-        "scaleY": 1,
-        "scaleZ": 1.1666666666666667
-      },
-      "Nickname": "Резерв",
-      "Description": "",
-      "GMNotes": "size:3.622x3.500;settle",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CardID": 101,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "1": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-          "NumWidth": 3,
-          "NumHeight": 2,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 1
-        }
-      },
-      "PhysicsMaterial": {
-        "StaticFriction": 1,
-        "DynamicFriction": 1,
-        "Bounciness": 0,
-        "FrictionCombine": 3,
-        "BounceCombine": 1
-      },
-      "Rigidbody": {
-        "Mass": 1,
-        "Drag": 2,
-        "AngularDrag": 10,
-        "UseGravity": true
-      }
-    },
-    {
-      "GUID": "c20048",
+      "GUID": "c20045",
       "Name": "Deck",
       "Transform": {
         "posX": -4.789,
@@ -5295,27 +5259,30 @@
       "SidewaysCard": false,
       "DeckIDs": [
         200,
-        202,
-        200,
-        203,
-        202,
-        202,
-        204,
-        202,
-        203,
         200,
         200,
-        202,
-        204,
         200,
-        204,
-        204,
+        200,
         201,
+        201,
+        201,
+        201,
+        201,
+        202,
+        202,
+        202,
+        202,
+        202,
         203,
-        201,
+        203,
+        203,
+        203,
+        203,
         204,
-        201,
-        203
+        204,
+        204,
+        204,
+        204
       ],
       "CustomDeck": {
         "2": {
@@ -5329,6 +5296,180 @@
         }
       },
       "ContainedObjects": [
+        {
+          "GUID": "c20046",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Коммуникации",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 200,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "2": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20047",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Коммуникации",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 200,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "2": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20048",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Коммуникации",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 200,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "2": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
         {
           "GUID": "c20049",
           "Name": "Card",
@@ -5401,64 +5542,6 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Промзона",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 202,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c2004b",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
           "Nickname": "Коммуникации",
           "Description": "",
           "GMNotes": "",
@@ -5504,7 +5587,7 @@
           }
         },
         {
-          "GUID": "c2004c",
+          "GUID": "c2004b",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -5517,7 +5600,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Бойня",
+          "Nickname": "Эпицентр",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -5547,7 +5630,65 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 203,
+          "CardID": 201,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "2": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c2004c",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Эпицентр",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 201,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -5575,7 +5716,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Промзона",
+          "Nickname": "Эпицентр",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -5605,7 +5746,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 202,
+          "CardID": 201,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -5633,7 +5774,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Промзона",
+          "Nickname": "Эпицентр",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -5663,7 +5804,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 202,
+          "CardID": 201,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -5691,7 +5832,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Торжище",
+          "Nickname": "Эпицентр",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -5721,7 +5862,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 204,
+          "CardID": 201,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -5807,7 +5948,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Бойня",
+          "Nickname": "Промзона",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -5837,7 +5978,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 203,
+          "CardID": 202,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -5865,7 +6006,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Коммуникации",
+          "Nickname": "Промзона",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -5895,7 +6036,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 200,
+          "CardID": 202,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -5923,7 +6064,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Коммуникации",
+          "Nickname": "Промзона",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -5953,7 +6094,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 200,
+          "CardID": 202,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -6039,7 +6180,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Торжище",
+          "Nickname": "Бойня",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -6069,7 +6210,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 204,
+          "CardID": 203,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -6085,238 +6226,6 @@
         },
         {
           "GUID": "c20056",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Коммуникации",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 200,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20057",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Торжище",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 204,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20058",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Торжище",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 204,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20059",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Эпицентр",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 201,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c2005a",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -6374,7 +6283,7 @@
           }
         },
         {
-          "GUID": "c2005b",
+          "GUID": "c20057",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -6387,7 +6296,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Эпицентр",
+          "Nickname": "Бойня",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -6417,7 +6326,239 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 201,
+          "CardID": 203,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "2": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20058",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Бойня",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 203,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "2": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20059",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Бойня",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 203,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "2": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c2005a",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Торжище",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 204,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "2": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c2005b",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Торжище",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 204,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -6503,7 +6644,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Эпицентр",
+          "Nickname": "Торжище",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -6533,7 +6674,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 201,
+          "CardID": 204,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -6561,7 +6702,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Бойня",
+          "Nickname": "Торжище",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -6591,7 +6732,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 203,
+          "CardID": 204,
           "SidewaysCard": false,
           "CustomDeck": {
             "2": {
@@ -6621,220 +6762,7 @@
       }
     },
     {
-      "GUID": "c20045",
-      "Name": "Card",
-      "Transform": {
-        "posX": 0,
-        "posY": 1.2,
-        "posZ": 0,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6463273345176488,
-        "scaleY": 1,
-        "scaleZ": 1.1666666666666667
-      },
-      "Nickname": "Бойня",
-      "Description": "",
-      "GMNotes": "size:3.622x3.500;settle",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CardID": 203,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "2": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-          "NumWidth": 3,
-          "NumHeight": 2,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 1
-        }
-      },
-      "PhysicsMaterial": {
-        "StaticFriction": 1,
-        "DynamicFriction": 1,
-        "Bounciness": 0,
-        "FrictionCombine": 3,
-        "BounceCombine": 1
-      },
-      "Rigidbody": {
-        "Mass": 1,
-        "Drag": 2,
-        "AngularDrag": 10,
-        "UseGravity": true
-      }
-    },
-    {
-      "GUID": "c20046",
-      "Name": "Card",
-      "Transform": {
-        "posX": 4.789,
-        "posY": 1.2,
-        "posZ": 0,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6463273345176488,
-        "scaleY": 1,
-        "scaleZ": 1.1666666666666667
-      },
-      "Nickname": "Эпицентр",
-      "Description": "",
-      "GMNotes": "size:3.622x3.500;settle",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CardID": 201,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "2": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-          "NumWidth": 3,
-          "NumHeight": 2,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 1
-        }
-      },
-      "PhysicsMaterial": {
-        "StaticFriction": 1,
-        "DynamicFriction": 1,
-        "Bounciness": 0,
-        "FrictionCombine": 3,
-        "BounceCombine": 1
-      },
-      "Rigidbody": {
-        "Mass": 1,
-        "Drag": 2,
-        "AngularDrag": 10,
-        "UseGravity": true
-      }
-    },
-    {
-      "GUID": "c20047",
-      "Name": "Card",
-      "Transform": {
-        "posX": 9.577,
-        "posY": 1.2,
-        "posZ": 0,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6463273345176488,
-        "scaleY": 1,
-        "scaleZ": 1.1666666666666667
-      },
-      "Nickname": "Эпицентр",
-      "Description": "",
-      "GMNotes": "size:3.622x3.500;settle",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CardID": 201,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "2": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-          "NumWidth": 3,
-          "NumHeight": 2,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 1
-        }
-      },
-      "PhysicsMaterial": {
-        "StaticFriction": 1,
-        "DynamicFriction": 1,
-        "Bounciness": 0,
-        "FrictionCombine": 3,
-        "BounceCombine": 1
-      },
-      "Rigidbody": {
-        "Mass": 1,
-        "Drag": 2,
-        "AngularDrag": 10,
-        "UseGravity": true
-      }
-    },
-    {
-      "GUID": "c20062",
+      "GUID": "c2005f",
       "Name": "Deck",
       "Transform": {
         "posX": -4.789,
@@ -6879,27 +6807,30 @@
       "XmlUI": "",
       "SidewaysCard": false,
       "DeckIDs": [
-        302,
-        303,
-        304,
-        303,
-        302,
-        304,
+        300,
+        300,
+        300,
         300,
         300,
         301,
         301,
-        300,
-        303,
         301,
-        300,
+        301,
+        301,
         302,
         302,
-        304,
-        300,
-        304,
+        302,
+        302,
         302,
         303,
+        303,
+        303,
+        303,
+        303,
+        304,
+        304,
+        304,
+        304,
         304
       ],
       "CustomDeck": {
@@ -6915,7 +6846,7 @@
       },
       "ContainedObjects": [
         {
-          "GUID": "c20063",
+          "GUID": "c20060",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -6928,7 +6859,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Новый День",
+          "Nickname": "Сады Предтеч",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -6958,7 +6889,181 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 302,
+          "CardID": 300,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "3": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20061",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Сады Предтеч",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 300,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "3": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20062",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Сады Предтеч",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 300,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "3": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20063",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Сады Предтеч",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 300,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -6986,7 +7091,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Пекло",
+          "Nickname": "Сады Предтеч",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -7016,7 +7121,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 303,
+          "CardID": 300,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -7044,7 +7149,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Рейд",
+          "Nickname": "Домен",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -7074,7 +7179,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 304,
+          "CardID": 301,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -7102,7 +7207,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Пекло",
+          "Nickname": "Домен",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -7132,7 +7237,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 303,
+          "CardID": 301,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -7160,6 +7265,180 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
+          "Nickname": "Домен",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 301,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "3": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20068",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Домен",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 301,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "3": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20069",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Домен",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 301,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "3": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c2006a",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
           "Nickname": "Новый День",
           "Description": "",
           "GMNotes": "",
@@ -7205,180 +7484,6 @@
           }
         },
         {
-          "GUID": "c20068",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Рейд",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 304,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20069",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Сады Предтеч",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 300,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c2006a",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Сады Предтеч",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 300,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
           "GUID": "c2006b",
           "Name": "Card",
           "Transform": {
@@ -7392,7 +7497,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Домен",
+          "Nickname": "Новый День",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -7422,7 +7527,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 301,
+          "CardID": 302,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -7450,7 +7555,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Домен",
+          "Nickname": "Новый День",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -7480,7 +7585,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 301,
+          "CardID": 302,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -7508,7 +7613,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Сады Предтеч",
+          "Nickname": "Новый День",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -7538,7 +7643,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 300,
+          "CardID": 302,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -7554,6 +7659,64 @@
         },
         {
           "GUID": "c2006e",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Новый День",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 302,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "3": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c2006f",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -7611,64 +7774,6 @@
           }
         },
         {
-          "GUID": "c2006f",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Домен",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 301,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
           "GUID": "c20070",
           "Name": "Card",
           "Transform": {
@@ -7682,7 +7787,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Сады Предтеч",
+          "Nickname": "Пекло",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -7712,7 +7817,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 300,
+          "CardID": 303,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -7740,7 +7845,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Новый День",
+          "Nickname": "Пекло",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -7770,7 +7875,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 302,
+          "CardID": 303,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -7798,7 +7903,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Новый День",
+          "Nickname": "Пекло",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -7828,7 +7933,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 302,
+          "CardID": 303,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -7844,6 +7949,64 @@
         },
         {
           "GUID": "c20073",
+          "Name": "Card",
+          "Transform": {
+            "posX": 0,
+            "posY": 2,
+            "posZ": 0,
+            "rotX": 0,
+            "rotY": 180,
+            "rotZ": 180,
+            "scaleX": 1.6463273345176488,
+            "scaleY": 1,
+            "scaleZ": 1.1666666666666667
+          },
+          "Nickname": "Пекло",
+          "Description": "",
+          "GMNotes": "",
+          "AltLookAngle": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "ColorDiffuse": {
+            "r": 1,
+            "g": 1,
+            "b": 1
+          },
+          "LayoutGroupSortIndex": 0,
+          "Value": 0,
+          "Locked": false,
+          "Grid": true,
+          "Snap": true,
+          "IgnoreFoW": false,
+          "MeasureMovement": false,
+          "DragSelectable": true,
+          "Autoraise": true,
+          "Sticky": true,
+          "Tooltip": true,
+          "GridProjection": false,
+          "HideWhenFaceDown": true,
+          "Hands": true,
+          "LuaScript": "",
+          "LuaScriptState": "",
+          "XmlUI": "",
+          "CardID": 303,
+          "SidewaysCard": false,
+          "CustomDeck": {
+            "3": {
+              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+              "NumWidth": 3,
+              "NumHeight": 2,
+              "BackIsHidden": true,
+              "UniqueBack": false,
+              "Type": 1
+            }
+          }
+        },
+        {
+          "GUID": "c20074",
           "Name": "Card",
           "Transform": {
             "posX": 0,
@@ -7887,64 +8050,6 @@
           "LuaScriptState": "",
           "XmlUI": "",
           "CardID": 304,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20074",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Сады Предтеч",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 300,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -8030,7 +8135,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Новый День",
+          "Nickname": "Рейд",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -8060,7 +8165,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 302,
+          "CardID": 304,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -8088,7 +8193,7 @@
             "scaleY": 1,
             "scaleZ": 1.1666666666666667
           },
-          "Nickname": "Пекло",
+          "Nickname": "Рейд",
           "Description": "",
           "GMNotes": "",
           "AltLookAngle": {
@@ -8118,7 +8223,7 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
-          "CardID": 303,
+          "CardID": 304,
           "SidewaysCard": false,
           "CustomDeck": {
             "3": {
@@ -8191,219 +8296,6 @@
           }
         }
       ],
-      "PhysicsMaterial": {
-        "StaticFriction": 1,
-        "DynamicFriction": 1,
-        "Bounciness": 0,
-        "FrictionCombine": 3,
-        "BounceCombine": 1
-      },
-      "Rigidbody": {
-        "Mass": 1,
-        "Drag": 2,
-        "AngularDrag": 10,
-        "UseGravity": true
-      }
-    },
-    {
-      "GUID": "c2005f",
-      "Name": "Card",
-      "Transform": {
-        "posX": 0,
-        "posY": 1.2,
-        "posZ": -4.667,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6463273345176488,
-        "scaleY": 1,
-        "scaleZ": 1.1666666666666667
-      },
-      "Nickname": "Пекло",
-      "Description": "",
-      "GMNotes": "size:3.622x3.500;settle",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CardID": 303,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "3": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-          "NumWidth": 3,
-          "NumHeight": 2,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 1
-        }
-      },
-      "PhysicsMaterial": {
-        "StaticFriction": 1,
-        "DynamicFriction": 1,
-        "Bounciness": 0,
-        "FrictionCombine": 3,
-        "BounceCombine": 1
-      },
-      "Rigidbody": {
-        "Mass": 1,
-        "Drag": 2,
-        "AngularDrag": 10,
-        "UseGravity": true
-      }
-    },
-    {
-      "GUID": "c20060",
-      "Name": "Card",
-      "Transform": {
-        "posX": 4.789,
-        "posY": 1.2,
-        "posZ": -4.667,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6463273345176488,
-        "scaleY": 1,
-        "scaleZ": 1.1666666666666667
-      },
-      "Nickname": "Домен",
-      "Description": "",
-      "GMNotes": "size:3.622x3.500;settle",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CardID": 301,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "3": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-          "NumWidth": 3,
-          "NumHeight": 2,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 1
-        }
-      },
-      "PhysicsMaterial": {
-        "StaticFriction": 1,
-        "DynamicFriction": 1,
-        "Bounciness": 0,
-        "FrictionCombine": 3,
-        "BounceCombine": 1
-      },
-      "Rigidbody": {
-        "Mass": 1,
-        "Drag": 2,
-        "AngularDrag": 10,
-        "UseGravity": true
-      }
-    },
-    {
-      "GUID": "c20061",
-      "Name": "Card",
-      "Transform": {
-        "posX": 9.577,
-        "posY": 1.2,
-        "posZ": -4.667,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 1.6463273345176488,
-        "scaleY": 1,
-        "scaleZ": 1.1666666666666667
-      },
-      "Nickname": "Домен",
-      "Description": "",
-      "GMNotes": "size:3.622x3.500;settle",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": true,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": true,
-      "Hands": true,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CardID": 301,
-      "SidewaysCard": false,
-      "CustomDeck": {
-        "3": {
-          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-          "NumWidth": 3,
-          "NumHeight": 2,
-          "BackIsHidden": true,
-          "UniqueBack": false,
-          "Type": 1
-        }
-      },
       "PhysicsMaterial": {
         "StaticFriction": 1,
         "DynamicFriction": 1,
