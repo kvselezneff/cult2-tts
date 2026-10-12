@@ -18,7 +18,7 @@
                   {
                       "id":  "yellow",
                       "name":  "Жёлтая колода",
-                      "faces":  "deck_yellow_faces_bc071c.jpg",
+                      "faces":  "deck_yellow_faces_9f7ba6.jpg",
                       "back":  "deck_yellow_back_3764ec.jpg",
                       "cards":  [
                                     "Коммуникации",
@@ -70,14 +70,14 @@
                          "board":  {
                                        "name":  "Планшет: Крыса",
                                        "face":  "board_krysa_1_0137db.jpg",
-                                       "back":  "board_krysa_2_e22afe.jpg",
+                                       "back":  "board_krysa_2_93deb1.jpg",
                                        "w":  2436,
                                        "h":  2370
                                    },
                          "tokens":  [
                                         {
                                             "name":  "Отряд чёрный 1 / 4",
-                                            "face":  "tok_black_4_icon_597470.jpg",
+                                            "face":  "tok_black_4_icon_b41d02.jpg",
                                             "back":  "tok_black_1_plain_46fb2f.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -98,7 +98,7 @@
                                         },
                                         {
                                             "name":  "Отряд чёрный 4 / 1",
-                                            "face":  "tok_black_1_icon_a15ad9.jpg",
+                                            "face":  "tok_black_1_icon_e0a328.jpg",
                                             "back":  "tok_black_4_plain_021eee.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -112,14 +112,14 @@
                          "board":  {
                                        "name":  "Планшет: Таракан",
                                        "face":  "board_tarakan_1_393abd.jpg",
-                                       "back":  "board_tarakan_2_4ee8dd.jpg",
+                                       "back":  "board_tarakan_2_41b28d.jpg",
                                        "w":  2436,
                                        "h":  2370
                                    },
                          "tokens":  [
                                         {
                                             "name":  "Отряд охра 1 / 4",
-                                            "face":  "tok_ochre_4_icon_4d0a60.jpg",
+                                            "face":  "tok_ochre_4_icon_80af58.jpg",
                                             "back":  "tok_ochre_1_plain_ddd57b.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -140,7 +140,7 @@
                                         },
                                         {
                                             "name":  "Отряд охра 4 / 1",
-                                            "face":  "tok_ochre_1_icon_df137d.jpg",
+                                            "face":  "tok_ochre_1_icon_5c0b64.jpg",
                                             "back":  "tok_ochre_4_plain_31c34b.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -154,14 +154,14 @@
                          "board":  {
                                        "name":  "Планшет: Ворона",
                                        "face":  "board_vorona_1_1666f9.jpg",
-                                       "back":  "board_vorona_2_2d188e.jpg",
+                                       "back":  "board_vorona_2_a5223e.jpg",
                                        "w":  2436,
                                        "h":  2370
                                    },
                          "tokens":  [
                                         {
                                             "name":  "Отряд светло-серый 1 / 4",
-                                            "face":  "tok_lightgray_4_icon_0475bd.jpg",
+                                            "face":  "tok_lightgray_4_icon_0f544c.jpg",
                                             "back":  "tok_lightgray_1_plain_12fcc6.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -182,7 +182,7 @@
                                         },
                                         {
                                             "name":  "Отряд светло-серый 4 / 1",
-                                            "face":  "tok_lightgray_1_icon_4bb2f8.jpg",
+                                            "face":  "tok_lightgray_1_icon_ea455f.jpg",
                                             "back":  "tok_lightgray_4_plain_ab8b78.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -196,14 +196,14 @@
                          "board":  {
                                        "name":  "Планшет: Ящер",
                                        "face":  "board_yashcher_1_c53f30.jpg",
-                                       "back":  "board_yashcher_2_fd9c3d.jpg",
+                                       "back":  "board_yashcher_2_4998bf.jpg",
                                        "w":  2436,
                                        "h":  2370
                                    },
                          "tokens":  [
                                         {
                                             "name":  "Отряд оливковый 1 / 4",
-                                            "face":  "tok_olive_4_icon_d4bee4.jpg",
+                                            "face":  "tok_olive_4_icon_c024b8.jpg",
                                             "back":  "tok_olive_1_plain_7ce22a.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -224,7 +224,7 @@
                                         },
                                         {
                                             "name":  "Отряд оливковый 4 / 1",
-                                            "face":  "tok_olive_1_icon_07af9b.jpg",
+                                            "face":  "tok_olive_1_icon_281474.jpg",
                                             "back":  "tok_olive_4_plain_b59fe5.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -238,14 +238,14 @@
                          "board":  {
                                        "name":  "Планшет: Обезьяна",
                                        "face":  "board_obezyana_1_1965fb.jpg",
-                                       "back":  "board_obezyana_2_ed63f4.jpg",
+                                       "back":  "board_obezyana_2_90588f.jpg",
                                        "w":  2439,
                                        "h":  2370
                                    },
                          "tokens":  [
                                         {
                                             "name":  "Отряд синий 1 / 4",
-                                            "face":  "tok_blue_4_icon_425d0b.jpg",
+                                            "face":  "tok_blue_4_icon_82d0f6.jpg",
                                             "back":  "tok_blue_1_plain_8e2076.jpg",
                                             "w":  1182,
                                             "h":  1182
@@ -266,7 +266,7 @@
                                         },
                                         {
                                             "name":  "Отряд синий 4 / 1",
-                                            "face":  "tok_blue_1_icon_2499d5.jpg",
+                                            "face":  "tok_blue_1_icon_6a7076.jpg",
                                             "back":  "tok_blue_4_plain_4ab4bb.jpg",
                                             "w":  1182,
                                             "h":  1182
