@@ -1,7 +1,7 @@
 {
   "SaveName": "Cult2",
-  "EpochTime": 1791817319,
-  "Date": "10/12/2026, 6:01:59 PM",
+  "EpochTime": 1791821388,
+  "Date": "10/12/2026, 7:09:48 PM",
   "VersionNumber": "v14.2.1",
   "GameMode": "Cult2",
   "GameType": "Game",
@@ -40,7 +40,7 @@
     "TurnColor": ""
   },
   "DecalPallet": [],
-  "LuaScript": "-- Cult2. При первой загрузке доводит размеры объектов до заданных в GMNotes «size:ШxГ»\n-- (единицы стола), затем запоминает это в состоянии скрипта. Колоды пересоздаются целиком, чтобы\n-- новый масштаб был и у карт внутри. Мешок Металла получает жетон уже правильного размера.\nlocal done = false\n\nfunction onSave()\n  if done then return 'calibrated' end\nend\n\nfunction onLoad(state)\n  if state == 'calibrated' then done = true return end\n  Wait.condition(calibrate, function()\n    for _, o in ipairs(getObjects()) do\n      if o.loading_custom then return false end\n    end\n    return true\n  end, 60, calibrate)\nend\n\nlocal function target(o)\n  local w, h = (o.getGMNotes() or ''):match('size:([%d%.]+)x([%d%.]+)')\n  if w then return tonumber(w), tonumber(h) end\nend\n\nfunction calibrate()\n  if done then return end\n  done = true\n  local probe, bag\n  for _, o in ipairs(getObjects()) do\n    local note = o.getGMNotes() or ''\n    if note == 'metalbag' then bag = o end\n    local tw, th = target(o)\n    if tw then\n      local b = o.getBoundsNormalized().size\n      local fx, fz = tw / b.x, th / b.z\n      if o.type == 'Deck' then\n        local d = JSON.decode(o.getJSON())\n        local function sc(t) t.Transform.scaleX = t.Transform.scaleX * fx; t.Transform.scaleZ = t.Transform.scaleZ * fz end\n        sc(d)\n        for _, c in ipairs(d.ContainedObjects or {}) do sc(c) end\n        o.destruct()\n        spawnObjectJSON({ json = JSON.encode(d) })\n      else\n        local s = o.getScale()\n        o.setScale({ s.x * fx, s.y, s.z * fz })\n      end\n      if note:find(';metal') then probe = o end\n    end\n  end\n  Wait.frames(function()\n    if probe and bag then\n      local p = JSON.decode(probe.getJSON())\n      p.GMNotes = ''\n      local d = JSON.decode(bag.getJSON())\n      d.ContainedObjects = { p }\n      bag.destruct()\n      probe.destruct()\n      spawnObjectJSON({ json = JSON.encode(d) })\n    end\n    broadcastToAll('Cult2: размеры компонентов выставлены. Сохраните игру, чтобы так и осталось.', { 0.9, 0.8, 0.5 })\n  end, 10)\nend\n",
+  "LuaScript": "-- Cult2. При первой загрузке доводит размеры объектов до заданных в GMNotes «size:ШxГ»\n-- (единицы стола), затем запоминает это в состоянии скрипта. Колоды пересоздаются целиком, чтобы\n-- новый масштаб был и у карт внутри. Мешок Металла получает жетон уже правильного размера.\n-- Объекты с меткой settle лежат закреплёнными, пока меняются размеры; потом каждый кладётся ровно\n-- на поверхность стола (стопки — друг на друга), скорость гасится, закрепление снимается.\nlocal done = false\n\nfunction onSave()\n  if done then return 'calibrated' end\nend\n\nfunction onLoad(state)\n  if state == 'calibrated' then done = true return end\n  Wait.condition(calibrate, function()\n    for _, o in ipairs(getObjects()) do\n      if o.loading_custom then return false end\n    end\n    return true\n  end, 60, calibrate)\nend\n\nlocal function target(o)\n  local w, h = (o.getGMNotes() or ''):match('size:([%d%.]+)x([%d%.]+)')\n  if w then return tonumber(w), tonumber(h) end\nend\n\nfunction calibrate()\n  if done then return end\n  done = true\n  local probe, bag\n  for _, o in ipairs(getObjects()) do\n    local note = o.getGMNotes() or ''\n    if note == 'metalbag' then bag = o end\n    local tw, th = target(o)\n    if tw then\n      local b = o.getBoundsNormalized().size\n      local fx, fz = tw / b.x, th / b.z\n      if o.type == 'Deck' then\n        local d = JSON.decode(o.getJSON())\n        local function sc(t) t.Transform.scaleX = t.Transform.scaleX * fx; t.Transform.scaleZ = t.Transform.scaleZ * fz end\n        sc(d)\n        for _, c in ipairs(d.ContainedObjects or {}) do sc(c) end\n        o.destruct()\n        spawnObjectJSON({ json = JSON.encode(d) })\n      else\n        local s = o.getScale()\n        o.setScale({ s.x * fx, s.y, s.z * fz })\n      end\n      if note:find(';metal') then probe = o end\n    end\n  end\n  Wait.frames(function()\n    if probe and bag then\n      local p = JSON.decode(probe.getJSON())\n      p.GMNotes = ''\n      p.Locked = false\n      local d = JSON.decode(bag.getJSON())\n      d.ContainedObjects = { p }\n      bag.destruct()\n      probe.destruct()\n      spawnObjectJSON({ json = JSON.encode(d) })\n    end\n    Wait.frames(settle, 10)\n  end, 10)\nend\n\nfunction settle()\n  local top = 1\n  local list = {}\n  for _, o in ipairs(getObjects()) do\n    if o.getName() == 'Стол' then\n      local b = o.getBounds()\n      top = b.center.y + b.size.y / 2\n    end\n    if (o.getGMNotes() or ''):find(';settle') then table.insert(list, o) end\n  end\n  table.sort(list, function(a, b) return a.getPosition().y < b.getPosition().y end)\n  local level = {}\n  for _, o in ipairs(list) do\n    local p, b = o.getPosition(), o.getBounds()\n    local key = math.floor(p.x * 10 + 0.5) .. ',' .. math.floor(p.z * 10 + 0.5)\n    local floor = level[key] or top\n    local bottom = b.center.y - b.size.y / 2\n    o.setPosition({ p.x, p.y + (floor + 0.01 - bottom), p.z })\n    level[key] = floor + 0.01 + b.size.y\n    o.setVelocity({ 0, 0, 0 })\n    o.setAngularVelocity({ 0, 0, 0 })\n    o.setGMNotes((o.getGMNotes():gsub(';settle', '')))\n    o.setLock(false)\n  end\n  broadcastToAll('Cult2: размеры компонентов выставлены. Сохраните игру, чтобы так и осталось.', { 0.9, 0.8, 0.5 })\nend\n",
   "LuaScriptState": "",
   "XmlUI": "",
   "SnapPoints": [
@@ -648,7 +648,7 @@
       "Position": {
         "x": -9.577,
         "y": 1,
-        "z": -4.667
+        "z": 4.667
       },
       "Rotation": {
         "x": 0,
@@ -660,7 +660,7 @@
       "Position": {
         "x": -4.789,
         "y": 1,
-        "z": -4.667
+        "z": 4.667
       },
       "Rotation": {
         "x": 0,
@@ -672,7 +672,7 @@
       "Position": {
         "x": 0,
         "y": 1,
-        "z": -4.667
+        "z": 4.667
       },
       "Rotation": {
         "x": 0,
@@ -684,7 +684,7 @@
       "Position": {
         "x": 4.789,
         "y": 1,
-        "z": -4.667
+        "z": 4.667
       },
       "Rotation": {
         "x": 0,
@@ -696,7 +696,7 @@
       "Position": {
         "x": 9.577,
         "y": 1,
-        "z": -4.667
+        "z": 4.667
       },
       "Rotation": {
         "x": 0,
@@ -768,7 +768,7 @@
       "Position": {
         "x": -9.577,
         "y": 1,
-        "z": 4.667
+        "z": -4.667
       },
       "Rotation": {
         "x": 0,
@@ -780,7 +780,7 @@
       "Position": {
         "x": -4.789,
         "y": 1,
-        "z": 4.667
+        "z": -4.667
       },
       "Rotation": {
         "x": 0,
@@ -792,7 +792,7 @@
       "Position": {
         "x": 0,
         "y": 1,
-        "z": 4.667
+        "z": -4.667
       },
       "Rotation": {
         "x": 0,
@@ -804,7 +804,7 @@
       "Position": {
         "x": 4.789,
         "y": 1,
-        "z": 4.667
+        "z": -4.667
       },
       "Rotation": {
         "x": 0,
@@ -816,7 +816,7 @@
       "Position": {
         "x": 9.577,
         "y": 1,
-        "z": 4.667
+        "z": -4.667
       },
       "Rotation": {
         "x": 0,
@@ -933,7 +933,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -32.037,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -944,7 +944,7 @@
       },
       "Nickname": "Отряд чёрный 1 / 4",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -957,7 +957,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -983,6 +983,19 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
@@ -990,7 +1003,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -30.683,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1001,7 +1014,7 @@
       },
       "Nickname": "Отряд чёрный 2 / металл",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1014,7 +1027,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1040,6 +1053,19 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
@@ -1047,7 +1073,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -29.328,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1058,7 +1084,7 @@
       },
       "Nickname": "Отряд чёрный 3 / 2",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1071,7 +1097,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1097,6 +1123,19 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
@@ -1104,7 +1143,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -27.974,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1115,7 +1154,7 @@
       },
       "Nickname": "Отряд чёрный 4 / 1",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1128,7 +1167,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1154,25 +1193,38 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
       "GUID": "c20007",
-      "Name": "Custom_Token",
+      "Name": "Custom_Tile",
       "Transform": {
-        "posX": -32.064,
+        "posX": -26.732,
         "posY": 2,
-        "posZ": -18.5,
+        "posZ": -14.196,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
-        "scaleX": 0.5,
+        "scaleX": 1.8109600679694138,
         "scaleY": 1,
-        "scaleZ": 0.5
+        "scaleZ": 1.75
       },
-      "Nickname": "Металл",
+      "Nickname": "Экспедиция",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:3.622x3.500",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1201,15 +1253,15 @@
       "LuaScriptState": "",
       "XmlUI": "",
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
-        "ImageSecondaryURL": "",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/expedition_1_5b977d.jpg",
+        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/expedition_2_d844ab.jpg",
         "ImageScalar": 1,
         "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.2,
-          "MergeDistancePixels": 15,
-          "StandUp": false,
-          "Stackable": true
+        "CustomTile": {
+          "Type": 0,
+          "Thickness": 0.1,
+          "Stackable": false,
+          "Stretch": true
         }
       }
     },
@@ -1217,8 +1269,8 @@
       "GUID": "c20008",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": -30.764,
-        "posY": 2,
+        "posX": -32.064,
+        "posY": 1.3,
         "posZ": -18.5,
         "rotX": 0,
         "rotY": 180,
@@ -1229,7 +1281,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1242,7 +1294,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1257,6 +1309,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -1274,8 +1339,8 @@
       "GUID": "c20009",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": -29.464,
-        "posY": 2,
+        "posX": -30.764,
+        "posY": 1.3,
         "posZ": -18.5,
         "rotX": 0,
         "rotY": 180,
@@ -1286,7 +1351,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1299,7 +1364,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1314,6 +1379,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -1329,6 +1407,76 @@
     },
     {
       "GUID": "c2000a",
+      "Name": "Custom_Token",
+      "Transform": {
+        "posX": -29.464,
+        "posY": 1.3,
+        "posZ": -18.5,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 0.5,
+        "scaleY": 1,
+        "scaleZ": 0.5
+      },
+      "Nickname": "Металл",
+      "Description": "",
+      "GMNotes": "size:1.000x1.000;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
+      "CustomImage": {
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1,
+        "WidthScale": 0,
+        "CustomToken": {
+          "Thickness": 0.2,
+          "MergeDistancePixels": 15,
+          "StandUp": false,
+          "Stackable": true
+        }
+      }
+    },
+    {
+      "GUID": "c2000b",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -8.044,
@@ -1385,11 +1533,11 @@
       }
     },
     {
-      "GUID": "c2000b",
+      "GUID": "c2000c",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -9.328,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1400,7 +1548,7 @@
       },
       "Nickname": "Отряд охра 1 / 4",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1413,7 +1561,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1439,14 +1587,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c2000c",
+      "GUID": "c2000d",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -7.973,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1457,7 +1618,7 @@
       },
       "Nickname": "Отряд охра 2 / металл",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1470,7 +1631,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1496,14 +1657,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c2000d",
+      "GUID": "c2000e",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -6.619,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1514,7 +1688,7 @@
       },
       "Nickname": "Отряд охра 3 / 2",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1527,7 +1701,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1553,14 +1727,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c2000e",
+      "GUID": "c2000f",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -5.264,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1571,7 +1758,7 @@
       },
       "Nickname": "Отряд охра 4 / 1",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1584,7 +1771,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1610,71 +1797,27 @@
           "Stackable": false,
           "Stretch": true
         }
-      }
-    },
-    {
-      "GUID": "c2000f",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": -9.355,
-        "posY": 2,
-        "posZ": -18.5,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.5,
-        "scaleY": 1,
-        "scaleZ": 0.5
       },
-      "Nickname": "Металл",
-      "Description": "",
-      "GMNotes": "size:1.000x1.000",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
       },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.2,
-          "MergeDistancePixels": 15,
-          "StandUp": false,
-          "Stackable": true
-        }
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
       "GUID": "c20010",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": -8.055,
-        "posY": 2,
+        "posX": -9.355,
+        "posY": 1.3,
         "posZ": -18.5,
         "rotX": 0,
         "rotY": 180,
@@ -1685,7 +1828,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1698,7 +1841,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1713,6 +1856,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -1730,8 +1886,8 @@
       "GUID": "c20011",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": -6.755,
-        "posY": 2,
+        "posX": -8.055,
+        "posY": 1.3,
         "posZ": -18.5,
         "rotX": 0,
         "rotY": 180,
@@ -1742,7 +1898,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1755,7 +1911,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1770,6 +1926,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -1785,6 +1954,76 @@
     },
     {
       "GUID": "c20012",
+      "Name": "Custom_Token",
+      "Transform": {
+        "posX": -6.755,
+        "posY": 1.3,
+        "posZ": -18.5,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 0.5,
+        "scaleY": 1,
+        "scaleZ": 0.5
+      },
+      "Nickname": "Металл",
+      "Description": "",
+      "GMNotes": "size:1.000x1.000;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
+      "CustomImage": {
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1,
+        "WidthScale": 0,
+        "CustomToken": {
+          "Thickness": 0.2,
+          "MergeDistancePixels": 15,
+          "StandUp": false,
+          "Stackable": true
+        }
+      }
+    },
+    {
+      "GUID": "c20013",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 14.666,
@@ -1841,11 +2080,11 @@
       }
     },
     {
-      "GUID": "c20013",
+      "GUID": "c20014",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 13.382,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1856,7 +2095,7 @@
       },
       "Nickname": "Отряд светло-серый 1 / 4",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1869,7 +2108,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1895,14 +2134,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c20014",
+      "GUID": "c20015",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 14.736,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1913,7 +2165,7 @@
       },
       "Nickname": "Отряд светло-серый 2 / металл",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1926,7 +2178,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -1952,14 +2204,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c20015",
+      "GUID": "c20016",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 16.091,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -1970,7 +2235,7 @@
       },
       "Nickname": "Отряд светло-серый 3 / 2",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -1983,7 +2248,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2009,14 +2274,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c20016",
+      "GUID": "c20017",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 17.445,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": -17.073,
         "rotX": 0,
         "rotY": 180,
@@ -2027,7 +2305,7 @@
       },
       "Nickname": "Отряд светло-серый 4 / 1",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2040,7 +2318,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2066,71 +2344,27 @@
           "Stackable": false,
           "Stretch": true
         }
-      }
-    },
-    {
-      "GUID": "c20017",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": 13.355,
-        "posY": 2,
-        "posZ": -18.5,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.5,
-        "scaleY": 1,
-        "scaleZ": 0.5
       },
-      "Nickname": "Металл",
-      "Description": "",
-      "GMNotes": "size:1.000x1.000",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
       },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.2,
-          "MergeDistancePixels": 15,
-          "StandUp": false,
-          "Stackable": true
-        }
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
       "GUID": "c20018",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 14.655,
-        "posY": 2,
+        "posX": 13.355,
+        "posY": 1.3,
         "posZ": -18.5,
         "rotX": 0,
         "rotY": 180,
@@ -2141,7 +2375,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2154,7 +2388,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2169,6 +2403,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -2186,8 +2433,8 @@
       "GUID": "c20019",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 15.955,
-        "posY": 2,
+        "posX": 14.655,
+        "posY": 1.3,
         "posZ": -18.5,
         "rotX": 0,
         "rotY": 180,
@@ -2198,7 +2445,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2211,7 +2458,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2226,6 +2473,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -2241,6 +2501,76 @@
     },
     {
       "GUID": "c2001a",
+      "Name": "Custom_Token",
+      "Transform": {
+        "posX": 15.955,
+        "posY": 1.3,
+        "posZ": -18.5,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 0.5,
+        "scaleY": 1,
+        "scaleZ": 0.5
+      },
+      "Nickname": "Металл",
+      "Description": "",
+      "GMNotes": "size:1.000x1.000;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
+      "CustomImage": {
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1,
+        "WidthScale": 0,
+        "CustomToken": {
+          "Thickness": 0.2,
+          "MergeDistancePixels": 15,
+          "StandUp": false,
+          "Stackable": true
+        }
+      }
+    },
+    {
+      "GUID": "c2001b",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -3.311,
@@ -2297,11 +2627,11 @@
       }
     },
     {
-      "GUID": "c2001b",
+      "GUID": "c2001c",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -2.027,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": 17.073,
         "rotX": 0,
         "rotY": 0,
@@ -2312,7 +2642,7 @@
       },
       "Nickname": "Отряд оливковый 1 / 4",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2325,7 +2655,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2351,14 +2681,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c2001c",
+      "GUID": "c2001d",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -3.382,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": 17.073,
         "rotX": 0,
         "rotY": 0,
@@ -2369,7 +2712,7 @@
       },
       "Nickname": "Отряд оливковый 2 / металл",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2382,7 +2725,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2408,14 +2751,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c2001d",
+      "GUID": "c2001e",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -4.736,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": 17.073,
         "rotX": 0,
         "rotY": 0,
@@ -2426,7 +2782,7 @@
       },
       "Nickname": "Отряд оливковый 3 / 2",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2439,7 +2795,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2465,14 +2821,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c2001e",
+      "GUID": "c2001f",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": -6.091,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": 17.073,
         "rotX": 0,
         "rotY": 0,
@@ -2483,7 +2852,7 @@
       },
       "Nickname": "Отряд оливковый 4 / 1",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2496,7 +2865,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2522,71 +2891,27 @@
           "Stackable": false,
           "Stretch": true
         }
-      }
-    },
-    {
-      "GUID": "c2001f",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": -2,
-        "posY": 2,
-        "posZ": 18.5,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.5,
-        "scaleY": 1,
-        "scaleZ": 0.5
       },
-      "Nickname": "Металл",
-      "Description": "",
-      "GMNotes": "size:1.000x1.000",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
       },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.2,
-          "MergeDistancePixels": 15,
-          "StandUp": false,
-          "Stackable": true
-        }
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
       "GUID": "c20020",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": -3.3,
-        "posY": 2,
+        "posX": -2,
+        "posY": 1.3,
         "posZ": 18.5,
         "rotX": 0,
         "rotY": 180,
@@ -2597,7 +2922,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2610,7 +2935,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2625,6 +2950,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -2642,8 +2980,8 @@
       "GUID": "c20021",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": -4.6,
-        "posY": 2,
+        "posX": -3.3,
+        "posY": 1.3,
         "posZ": 18.5,
         "rotX": 0,
         "rotY": 180,
@@ -2654,7 +2992,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2667,7 +3005,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2682,6 +3020,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -2697,6 +3048,76 @@
     },
     {
       "GUID": "c20022",
+      "Name": "Custom_Token",
+      "Transform": {
+        "posX": -4.6,
+        "posY": 1.3,
+        "posZ": 18.5,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 0.5,
+        "scaleY": 1,
+        "scaleZ": 0.5
+      },
+      "Nickname": "Металл",
+      "Description": "",
+      "GMNotes": "size:1.000x1.000;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
+      "CustomImage": {
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
+        "ImageSecondaryURL": "",
+        "ImageScalar": 1,
+        "WidthScale": 0,
+        "CustomToken": {
+          "Thickness": 0.2,
+          "MergeDistancePixels": 15,
+          "StandUp": false,
+          "Stackable": true
+        }
+      }
+    },
+    {
+      "GUID": "c20023",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 19.399,
@@ -2753,11 +3174,11 @@
       }
     },
     {
-      "GUID": "c20023",
+      "GUID": "c20024",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 20.682,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": 17.073,
         "rotX": 0,
         "rotY": 0,
@@ -2768,7 +3189,7 @@
       },
       "Nickname": "Отряд синий 1 / 4",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2781,7 +3202,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2807,14 +3228,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c20024",
+      "GUID": "c20025",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 19.328,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": 17.073,
         "rotX": 0,
         "rotY": 0,
@@ -2825,7 +3259,7 @@
       },
       "Nickname": "Отряд синий 2 / металл",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2838,7 +3272,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2864,14 +3298,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c20025",
+      "GUID": "c20026",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 17.973,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": 17.073,
         "rotX": 0,
         "rotY": 0,
@@ -2882,7 +3329,7 @@
       },
       "Nickname": "Отряд синий 3 / 2",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2895,7 +3342,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2921,14 +3368,27 @@
           "Stackable": false,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
-      "GUID": "c20026",
+      "GUID": "c20027",
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 16.619,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": 17.073,
         "rotX": 0,
         "rotY": 0,
@@ -2939,7 +3399,7 @@
       },
       "Nickname": "Отряд синий 4 / 1",
       "Description": "",
-      "GMNotes": "size:1.054x1.054",
+      "GMNotes": "size:1.054x1.054;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -2952,7 +3412,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -2978,71 +3438,27 @@
           "Stackable": false,
           "Stretch": true
         }
-      }
-    },
-    {
-      "GUID": "c20027",
-      "Name": "Custom_Token",
-      "Transform": {
-        "posX": 20.71,
-        "posY": 2,
-        "posZ": 18.5,
-        "rotX": 0,
-        "rotY": 180,
-        "rotZ": 0,
-        "scaleX": 0.5,
-        "scaleY": 1,
-        "scaleZ": 0.5
       },
-      "Nickname": "Металл",
-      "Description": "",
-      "GMNotes": "size:1.000x1.000",
-      "AltLookAngle": {
-        "x": 0,
-        "y": 0,
-        "z": 0
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
       },
-      "ColorDiffuse": {
-        "r": 1,
-        "g": 1,
-        "b": 1
-      },
-      "LayoutGroupSortIndex": 0,
-      "Value": 0,
-      "Locked": false,
-      "Grid": true,
-      "Snap": true,
-      "IgnoreFoW": false,
-      "MeasureMovement": false,
-      "DragSelectable": true,
-      "Autoraise": true,
-      "Sticky": true,
-      "Tooltip": true,
-      "GridProjection": false,
-      "HideWhenFaceDown": false,
-      "Hands": false,
-      "LuaScript": "",
-      "LuaScriptState": "",
-      "XmlUI": "",
-      "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
-        "ImageSecondaryURL": "",
-        "ImageScalar": 1,
-        "WidthScale": 0,
-        "CustomToken": {
-          "Thickness": 0.2,
-          "MergeDistancePixels": 15,
-          "StandUp": false,
-          "Stackable": true
-        }
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
       "GUID": "c20028",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 19.41,
-        "posY": 2,
+        "posX": 20.71,
+        "posY": 1.3,
         "posZ": 18.5,
         "rotX": 0,
         "rotY": 180,
@@ -3053,7 +3469,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -3066,7 +3482,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -3081,6 +3497,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -3098,8 +3527,8 @@
       "GUID": "c20029",
       "Name": "Custom_Token",
       "Transform": {
-        "posX": 18.11,
-        "posY": 2,
+        "posX": 19.41,
+        "posY": 1.3,
         "posZ": 18.5,
         "rotX": 0,
         "rotY": 180,
@@ -3110,7 +3539,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -3123,7 +3552,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -3138,6 +3567,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
@@ -3153,21 +3595,21 @@
     },
     {
       "GUID": "c2002a",
-      "Name": "Custom_Tile",
+      "Name": "Custom_Token",
       "Transform": {
-        "posX": -29.065,
-        "posY": 2,
-        "posZ": 0,
+        "posX": 18.11,
+        "posY": 1.3,
+        "posZ": 18.5,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
-        "scaleX": 1.8109600679694138,
+        "scaleX": 0.5,
         "scaleY": 1,
-        "scaleZ": 1.75
+        "scaleZ": 0.5
       },
-      "Nickname": "Экспедиция",
+      "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:3.622x3.500",
+      "GMNotes": "size:1.000x1.000;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -3180,7 +3622,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -3195,26 +3637,39 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
-        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/expedition_1_5b977d.jpg",
-        "ImageSecondaryURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/expedition_2_d844ab.jpg",
+        "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
+        "ImageSecondaryURL": "",
         "ImageScalar": 1,
         "WidthScale": 0,
-        "CustomTile": {
-          "Type": 0,
-          "Thickness": 0.1,
-          "Stackable": false,
-          "Stretch": true
+        "CustomToken": {
+          "Thickness": 0.2,
+          "MergeDistancePixels": 15,
+          "StandUp": false,
+          "Stackable": true
         }
       }
     },
     {
-      "GUID": "c2002b",
+      "GUID": "c2002e",
       "Name": "Deck",
       "Transform": {
-        "posX": -24.443,
-        "posY": 2,
-        "posZ": 0,
+        "posX": -4.789,
+        "posY": 1.6,
+        "posZ": 4.667,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 180,
@@ -3224,7 +3679,7 @@
       },
       "Nickname": "Красная колода",
       "Description": "",
-      "GMNotes": "size:3.622x3.500",
+      "GMNotes": "size:3.622x3.500;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -3237,7 +3692,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -3254,9 +3709,6 @@
       "XmlUI": "",
       "SidewaysCard": false,
       "DeckIDs": [
-        103,
-        103,
-        101,
         101,
         104,
         100,
@@ -3292,180 +3744,6 @@
         }
       },
       "ContainedObjects": [
-        {
-          "GUID": "c2002c",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Засада",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 103,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c2002d",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Засада",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 103,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c2002e",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Резерв",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 101,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "1": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
         {
           "GUID": "c2002f",
           "Name": "Card",
@@ -4742,25 +5020,38 @@
             }
           }
         }
-      ]
+      ],
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
     },
     {
-      "GUID": "c20045",
-      "Name": "Deck",
+      "GUID": "c2002b",
+      "Name": "Card",
       "Transform": {
-        "posX": -19.821,
-        "posY": 2,
-        "posZ": 0,
+        "posX": 0,
+        "posY": 1.2,
+        "posZ": 4.667,
         "rotX": 0,
         "rotY": 180,
-        "rotZ": 180,
+        "rotZ": 0,
         "scaleX": 1.6463273345176488,
         "scaleY": 1,
         "scaleZ": 1.1666666666666667
       },
-      "Nickname": "Жёлтая колода",
+      "Nickname": "Засада",
       "Description": "",
-      "GMNotes": "size:3.622x3.500",
+      "GMNotes": "size:3.622x3.500;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -4773,7 +5064,220 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CardID": 103,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "1": {
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+          "NumWidth": 3,
+          "NumHeight": 2,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 1
+        }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
+    },
+    {
+      "GUID": "c2002c",
+      "Name": "Card",
+      "Transform": {
+        "posX": 4.789,
+        "posY": 1.2,
+        "posZ": 4.667,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.6463273345176488,
+        "scaleY": 1,
+        "scaleZ": 1.1666666666666667
+      },
+      "Nickname": "Засада",
+      "Description": "",
+      "GMNotes": "size:3.622x3.500;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CardID": 103,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "1": {
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+          "NumWidth": 3,
+          "NumHeight": 2,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 1
+        }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
+    },
+    {
+      "GUID": "c2002d",
+      "Name": "Card",
+      "Transform": {
+        "posX": 9.577,
+        "posY": 1.2,
+        "posZ": 4.667,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.6463273345176488,
+        "scaleY": 1,
+        "scaleZ": 1.1666666666666667
+      },
+      "Nickname": "Резерв",
+      "Description": "",
+      "GMNotes": "size:3.622x3.500;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CardID": 101,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "1": {
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_faces_f07858.jpg",
+          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_red_back_789071.jpg",
+          "NumWidth": 3,
+          "NumHeight": 2,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 1
+        }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
+    },
+    {
+      "GUID": "c20048",
+      "Name": "Deck",
+      "Transform": {
+        "posX": -4.789,
+        "posY": 1.6,
+        "posZ": 0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 180,
+        "scaleX": 1.6463273345176488,
+        "scaleY": 1,
+        "scaleZ": 1.1666666666666667
+      },
+      "Nickname": "Жёлтая колода",
+      "Description": "",
+      "GMNotes": "size:3.622x3.500;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -4790,9 +5294,6 @@
       "XmlUI": "",
       "SidewaysCard": false,
       "DeckIDs": [
-        203,
-        201,
-        201,
         200,
         202,
         200,
@@ -4828,180 +5329,6 @@
         }
       },
       "ContainedObjects": [
-        {
-          "GUID": "c20046",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Бойня",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 203,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20047",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Эпицентр",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 201,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20048",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Эпицентр",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 201,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "2": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
         {
           "GUID": "c20049",
           "Name": "Card",
@@ -6278,25 +6605,38 @@
             }
           }
         }
-      ]
+      ],
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
     },
     {
-      "GUID": "c2005f",
-      "Name": "Deck",
+      "GUID": "c20045",
+      "Name": "Card",
       "Transform": {
-        "posX": -15.199,
-        "posY": 2,
+        "posX": 0,
+        "posY": 1.2,
         "posZ": 0,
         "rotX": 0,
         "rotY": 180,
-        "rotZ": 180,
+        "rotZ": 0,
         "scaleX": 1.6463273345176488,
         "scaleY": 1,
         "scaleZ": 1.1666666666666667
       },
-      "Nickname": "Зелёная колода",
+      "Nickname": "Бойня",
       "Description": "",
-      "GMNotes": "size:3.622x3.500",
+      "GMNotes": "size:3.622x3.500;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -6309,7 +6649,220 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CardID": 203,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "2": {
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+          "NumWidth": 3,
+          "NumHeight": 2,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 1
+        }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
+    },
+    {
+      "GUID": "c20046",
+      "Name": "Card",
+      "Transform": {
+        "posX": 4.789,
+        "posY": 1.2,
+        "posZ": 0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.6463273345176488,
+        "scaleY": 1,
+        "scaleZ": 1.1666666666666667
+      },
+      "Nickname": "Эпицентр",
+      "Description": "",
+      "GMNotes": "size:3.622x3.500;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CardID": 201,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "2": {
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+          "NumWidth": 3,
+          "NumHeight": 2,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 1
+        }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
+    },
+    {
+      "GUID": "c20047",
+      "Name": "Card",
+      "Transform": {
+        "posX": 9.577,
+        "posY": 1.2,
+        "posZ": 0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.6463273345176488,
+        "scaleY": 1,
+        "scaleZ": 1.1666666666666667
+      },
+      "Nickname": "Эпицентр",
+      "Description": "",
+      "GMNotes": "size:3.622x3.500;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CardID": 201,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "2": {
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_faces_9f7ba6.jpg",
+          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_yellow_back_3764ec.jpg",
+          "NumWidth": 3,
+          "NumHeight": 2,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 1
+        }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
+    },
+    {
+      "GUID": "c20062",
+      "Name": "Deck",
+      "Transform": {
+        "posX": -4.789,
+        "posY": 1.6,
+        "posZ": -4.667,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 180,
+        "scaleX": 1.6463273345176488,
+        "scaleY": 1,
+        "scaleZ": 1.1666666666666667
+      },
+      "Nickname": "Зелёная колода",
+      "Description": "",
+      "GMNotes": "size:3.622x3.500;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -6326,9 +6879,6 @@
       "XmlUI": "",
       "SidewaysCard": false,
       "DeckIDs": [
-        303,
-        301,
-        301,
         302,
         303,
         304,
@@ -6364,180 +6914,6 @@
         }
       },
       "ContainedObjects": [
-        {
-          "GUID": "c20060",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Пекло",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 303,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20061",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Домен",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 301,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
-        {
-          "GUID": "c20062",
-          "Name": "Card",
-          "Transform": {
-            "posX": 0,
-            "posY": 2,
-            "posZ": 0,
-            "rotX": 0,
-            "rotY": 180,
-            "rotZ": 180,
-            "scaleX": 1.6463273345176488,
-            "scaleY": 1,
-            "scaleZ": 1.1666666666666667
-          },
-          "Nickname": "Домен",
-          "Description": "",
-          "GMNotes": "",
-          "AltLookAngle": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "ColorDiffuse": {
-            "r": 1,
-            "g": 1,
-            "b": 1
-          },
-          "LayoutGroupSortIndex": 0,
-          "Value": 0,
-          "Locked": false,
-          "Grid": true,
-          "Snap": true,
-          "IgnoreFoW": false,
-          "MeasureMovement": false,
-          "DragSelectable": true,
-          "Autoraise": true,
-          "Sticky": true,
-          "Tooltip": true,
-          "GridProjection": false,
-          "HideWhenFaceDown": true,
-          "Hands": true,
-          "LuaScript": "",
-          "LuaScriptState": "",
-          "XmlUI": "",
-          "CardID": 301,
-          "SidewaysCard": false,
-          "CustomDeck": {
-            "3": {
-              "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
-              "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
-              "NumWidth": 3,
-              "NumHeight": 2,
-              "BackIsHidden": true,
-              "UniqueBack": false,
-              "Type": 1
-            }
-          }
-        },
         {
           "GUID": "c20063",
           "Name": "Card",
@@ -7814,25 +8190,38 @@
             }
           }
         }
-      ]
+      ],
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
     },
     {
-      "GUID": "c20079",
-      "Name": "Custom_Tile",
+      "GUID": "c2005f",
+      "Name": "Card",
       "Transform": {
-        "posX": 13.819,
-        "posY": 2,
-        "posZ": 0,
+        "posX": 0,
+        "posY": 1.2,
+        "posZ": -4.667,
         "rotX": 0,
         "rotY": 180,
         "rotZ": 0,
-        "scaleX": 0.4304375531011045,
+        "scaleX": 1.6463273345176488,
         "scaleY": 1,
-        "scaleZ": 0.4304375531011045
+        "scaleZ": 1.1666666666666667
       },
-      "Nickname": "Жетон +3 / +5",
+      "Nickname": "Пекло",
       "Description": "",
-      "GMNotes": "size:0.861x0.861",
+      "GMNotes": "size:3.622x3.500;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -7845,7 +8234,220 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CardID": 303,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "3": {
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+          "NumWidth": 3,
+          "NumHeight": 2,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 1
+        }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
+    },
+    {
+      "GUID": "c20060",
+      "Name": "Card",
+      "Transform": {
+        "posX": 4.789,
+        "posY": 1.2,
+        "posZ": -4.667,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.6463273345176488,
+        "scaleY": 1,
+        "scaleZ": 1.1666666666666667
+      },
+      "Nickname": "Домен",
+      "Description": "",
+      "GMNotes": "size:3.622x3.500;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CardID": 301,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "3": {
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+          "NumWidth": 3,
+          "NumHeight": 2,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 1
+        }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
+    },
+    {
+      "GUID": "c20061",
+      "Name": "Card",
+      "Transform": {
+        "posX": 9.577,
+        "posY": 1.2,
+        "posZ": -4.667,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 1.6463273345176488,
+        "scaleY": 1,
+        "scaleZ": 1.1666666666666667
+      },
+      "Nickname": "Домен",
+      "Description": "",
+      "GMNotes": "size:3.622x3.500;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": true,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": true,
+      "Hands": true,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": "",
+      "CardID": 301,
+      "SidewaysCard": false,
+      "CustomDeck": {
+        "3": {
+          "FaceURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_faces_b2fe83.jpg",
+          "BackURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/deck_green_back_e95018.jpg",
+          "NumWidth": 3,
+          "NumHeight": 2,
+          "BackIsHidden": true,
+          "UniqueBack": false,
+          "Type": 1
+        }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      }
+    },
+    {
+      "GUID": "c20079",
+      "Name": "Custom_Tile",
+      "Transform": {
+        "posX": 13.819,
+        "posY": 1.3,
+        "posZ": 0,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 0.4304375531011045,
+        "scaleY": 1,
+        "scaleZ": 0.4304375531011045
+      },
+      "Nickname": "Жетон +3 / +5",
+      "Description": "",
+      "GMNotes": "size:0.861x0.861;settle",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -7871,6 +8473,19 @@
           "Stackable": true,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
@@ -7878,7 +8493,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 13.819,
-        "posY": 2.5,
+        "posY": 1.55,
         "posZ": 0,
         "rotX": 0,
         "rotY": 180,
@@ -7889,7 +8504,7 @@
       },
       "Nickname": "Жетон +3 / +5",
       "Description": "",
-      "GMNotes": "size:0.861x0.861",
+      "GMNotes": "size:0.861x0.861;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -7902,7 +8517,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -7928,6 +8543,19 @@
           "Stackable": true,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
@@ -7935,7 +8563,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 13.819,
-        "posY": 3,
+        "posY": 1.8,
         "posZ": 0,
         "rotX": 0,
         "rotY": 180,
@@ -7946,7 +8574,7 @@
       },
       "Nickname": "Жетон +3 / +5",
       "Description": "",
-      "GMNotes": "size:0.861x0.861",
+      "GMNotes": "size:0.861x0.861;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -7959,7 +8587,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -7985,6 +8613,19 @@
           "Stackable": true,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
@@ -7992,7 +8633,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 13.819,
-        "posY": 3.5,
+        "posY": 2.05,
         "posZ": 0,
         "rotX": 0,
         "rotY": 180,
@@ -8003,7 +8644,7 @@
       },
       "Nickname": "Жетон +3 / +5",
       "Description": "",
-      "GMNotes": "size:0.861x0.861",
+      "GMNotes": "size:0.861x0.861;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -8016,7 +8657,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -8042,6 +8683,19 @@
           "Stackable": true,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
@@ -8049,7 +8703,7 @@
       "Name": "Custom_Tile",
       "Transform": {
         "posX": 13.819,
-        "posY": 4,
+        "posY": 2.3,
         "posZ": 0,
         "rotX": 0,
         "rotY": 180,
@@ -8060,7 +8714,7 @@
       },
       "Nickname": "Жетон +3 / +5",
       "Description": "",
-      "GMNotes": "size:0.861x0.861",
+      "GMNotes": "size:0.861x0.861;settle",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -8073,7 +8727,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -8099,6 +8753,19 @@
           "Stackable": true,
           "Stretch": true
         }
+      },
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
       }
     },
     {
@@ -8151,7 +8818,7 @@
           "Name": "Custom_Token",
           "Transform": {
             "posX": 0,
-            "posY": 2,
+            "posY": 1.3,
             "posZ": 0,
             "rotX": 0,
             "rotY": 180,
@@ -8162,7 +8829,7 @@
           },
           "Nickname": "Металл",
           "Description": "",
-          "GMNotes": "size:1.000x1.000",
+          "GMNotes": "",
           "AltLookAngle": {
             "x": 0,
             "y": 0,
@@ -8190,6 +8857,19 @@
           "LuaScript": "",
           "LuaScriptState": "",
           "XmlUI": "",
+          "PhysicsMaterial": {
+            "StaticFriction": 1,
+            "DynamicFriction": 1,
+            "Bounciness": 0,
+            "FrictionCombine": 3,
+            "BounceCombine": 1
+          },
+          "Rigidbody": {
+            "Mass": 1,
+            "Drag": 2,
+            "AngularDrag": 10,
+            "UseGravity": true
+          },
           "CustomImage": {
             "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
             "ImageSecondaryURL": "",
@@ -8210,7 +8890,7 @@
       "Name": "Custom_Token",
       "Transform": {
         "posX": 19.749,
-        "posY": 2,
+        "posY": 1.3,
         "posZ": 0,
         "rotX": 0,
         "rotY": 180,
@@ -8221,7 +8901,7 @@
       },
       "Nickname": "Металл",
       "Description": "",
-      "GMNotes": "size:1.000x1.000;metal",
+      "GMNotes": "size:1.000x1.000;settle;metal",
       "AltLookAngle": {
         "x": 0,
         "y": 0,
@@ -8234,7 +8914,7 @@
       },
       "LayoutGroupSortIndex": 0,
       "Value": 0,
-      "Locked": false,
+      "Locked": true,
       "Grid": true,
       "Snap": true,
       "IgnoreFoW": false,
@@ -8249,6 +8929,19 @@
       "LuaScript": "",
       "LuaScriptState": "",
       "XmlUI": "",
+      "PhysicsMaterial": {
+        "StaticFriction": 1,
+        "DynamicFriction": 1,
+        "Bounciness": 0,
+        "FrictionCombine": 3,
+        "BounceCombine": 1
+      },
+      "Rigidbody": {
+        "Mass": 1,
+        "Drag": 2,
+        "AngularDrag": 10,
+        "UseGravity": true
+      },
       "CustomImage": {
         "ImageURL": "https://raw.githubusercontent.com/kvselezneff/cult2-tts/main/metal_cf2bfb.png",
         "ImageSecondaryURL": "",
