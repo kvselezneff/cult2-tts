@@ -33,7 +33,7 @@
                   {
                       "id":  "green",
                       "name":  "Зелёная колода",
-                      "faces":  "deck_green_faces_1d2513.jpg",
+                      "faces":  "deck_green_faces_1d64b4.jpg",
                       "back":  "deck_green_back_e95018.jpg",
                       "cards":  [
                                     "Электростанция",
@@ -260,7 +260,7 @@
                          "board":  {
                                        "name":  "Планшет: Обезьяна",
                                        "face":  "board_obezyana_1_1965fb.jpg",
-                                       "back":  "board_obezyana_2_90588f.jpg",
+                                       "back":  "board_obezyana_2_dc3c5f.jpg",
                                        "w":  2439,
                                        "h":  2370
                                    },
