@@ -3,7 +3,7 @@
                   {
                       "id":  "red",
                       "name":  "Красная колода",
-                      "faces":  "deck_red_faces_f07858.jpg",
+                      "faces":  "deck_red_faces_70265d.jpg",
                       "back":  "deck_red_back_789071.jpg",
                       "cards":  [
                                     "Блокпост",
@@ -18,13 +18,13 @@
                   {
                       "id":  "yellow",
                       "name":  "Жёлтая колода",
-                      "faces":  "deck_yellow_faces_e206f6.jpg",
+                      "faces":  "deck_yellow_faces_52c986.jpg",
                       "back":  "deck_yellow_back_3764ec.jpg",
                       "cards":  [
                                     "Коммуникации",
                                     "Эпицентр",
                                     "Промзона",
-                                    "Бойня",
+                                    "Диверсия",
                                     "Торжище"
                                 ],
                       "w":  2436,
@@ -33,12 +33,12 @@
                   {
                       "id":  "green",
                       "name":  "Зелёная колода",
-                      "faces":  "deck_green_faces_b2fe83.jpg",
+                      "faces":  "deck_green_faces_1d2513.jpg",
                       "back":  "deck_green_back_e95018.jpg",
                       "cards":  [
-                                    "Сады Предтеч",
-                                    "Домен",
-                                    "Новый День",
+                                    "Электростанция",
+                                    "Бойня",
+                                    "Оазис",
                                     "Пекло",
                                     "Рейд"
                                 ],
@@ -46,10 +46,32 @@
                       "h":  2354
                   }
               ],
+    "victory":  {
+                    "name":  "Карта победы",
+                    "w":  2436,
+                    "h":  2354,
+                    "cards":  [
+                                  {
+                                      "name":  "Победа: Сады Предтеч / Домен",
+                                      "face":  "victory_1_019da8.jpg",
+                                      "back":  "victory_2_115cca.jpg"
+                                  },
+                                  {
+                                      "name":  "Победа: Домен / Новый День",
+                                      "face":  "victory_2_115cca.jpg",
+                                      "back":  "victory_3_6939ca.jpg"
+                                  },
+                                  {
+                                      "name":  "Победа: Новый День / Сады Предтеч",
+                                      "face":  "victory_3_6939ca.jpg",
+                                      "back":  "victory_1_019da8.jpg"
+                                  }
+                              ]
+                },
     "expedition":  {
                        "name":  "Экспедиция",
-                       "face":  "expedition_1_5b977d.jpg",
-                       "back":  "expedition_2_d844ab.jpg",
+                       "face":  "expedition_1_cfdcc8.jpg",
+                       "back":  "expedition_2_9cbce2.jpg",
                        "w":  2436,
                        "h":  2354
                    },
