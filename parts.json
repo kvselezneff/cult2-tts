@@ -3,7 +3,7 @@
                   {
                       "id":  "red",
                       "name":  "Красная колода",
-                      "faces":  "deck_red_faces_d00de6.jpg",
+                      "faces":  "deck_red_faces_b1e8de.jpg",
                       "back":  "deck_red_back_789071.jpg",
                       "cards":  [
                                     "Блокпост",
@@ -37,7 +37,7 @@
                   {
                       "id":  "yellow",
                       "name":  "Жёлтая колода",
-                      "faces":  "deck_yellow_faces_d45dd6.jpg",
+                      "faces":  "deck_yellow_faces_7534fd.jpg",
                       "back":  "deck_yellow_back_3764ec.jpg",
                       "cards":  [
                                     "Коммуникации",
@@ -71,7 +71,7 @@
                   {
                       "id":  "green",
                       "name":  "Зелёная колода",
-                      "faces":  "deck_green_faces_ffcb38.jpg",
+                      "faces":  "deck_green_faces_f73ed3.jpg",
                       "back":  "deck_green_back_e95018.jpg",
                       "cards":  [
                                     "Домен",
@@ -105,8 +105,8 @@
               ],
     "expedition":  {
                        "name":  "Экспедиция",
-                       "face":  "expedition_1_048161.jpg",
-                       "back":  "expedition_2_f2bfca.jpg",
+                       "face":  "expedition_1_00c044.jpg",
+                       "back":  "expedition_2_5133f3.jpg",
                        "w":  2436,
                        "h":  2354
                    },
@@ -127,7 +127,7 @@
                          "board":  {
                                        "name":  "Планшет: Крыса",
                                        "face":  "board_krysa_1_76bf80.jpg",
-                                       "back":  "board_krysa_2_a82116.jpg",
+                                       "back":  "board_krysa_2_546568.jpg",
                                        "w":  2436,
                                        "h":  2370
                                    },
@@ -168,8 +168,8 @@
                          "color":  "охра",
                          "board":  {
                                        "name":  "Планшет: Таракан",
-                                       "face":  "board_tarakan_1_7548c9.jpg",
-                                       "back":  "board_tarakan_2_0ce8a3.jpg",
+                                       "face":  "board_tarakan_1_c37d5f.jpg",
+                                       "back":  "board_tarakan_2_ab235b.jpg",
                                        "w":  2436,
                                        "h":  2370
                                    },
@@ -211,7 +211,7 @@
                          "board":  {
                                        "name":  "Планшет: Ворона",
                                        "face":  "board_vorona_1_0df88d.jpg",
-                                       "back":  "board_vorona_2_a889cd.jpg",
+                                       "back":  "board_vorona_2_f319c6.jpg",
                                        "w":  2436,
                                        "h":  2370
                                    },
@@ -253,7 +253,7 @@
                          "board":  {
                                        "name":  "Планшет: Ящер",
                                        "face":  "board_yashcher_1_eaf5ec.jpg",
-                                       "back":  "board_yashcher_2_3954c5.jpg",
+                                       "back":  "board_yashcher_2_753613.jpg",
                                        "w":  2436,
                                        "h":  2370
                                    },
@@ -295,7 +295,7 @@
                          "board":  {
                                        "name":  "Планшет: Обезьяна",
                                        "face":  "board_obezyana_1_9e507a.jpg",
-                                       "back":  "board_obezyana_2_3cd2f4.jpg",
+                                       "back":  "board_obezyana_2_6436c4.jpg",
                                        "w":  2439,
                                        "h":  2370
                                    },
